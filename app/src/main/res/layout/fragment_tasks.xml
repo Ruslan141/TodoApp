@@ -45,7 +45,6 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
 
             style="@style/Widget.textViewSubhead"
             android:text="@string/completed" />
@@ -73,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            tools:itemCount="4"
+            tools:itemCount="0"
 
             tools:listitem="@layout/layout_task_unimportant" />
 
