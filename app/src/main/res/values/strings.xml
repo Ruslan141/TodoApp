@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name" translatable="false">ToDoApp</string>
+    <string name="my_tasks">My tasks</string>
+    <string name="info">Info</string>
+    <string name="completed">Completed</string>
+    <string name="new_task">New</string>
+    <string name="show_or_hide">Show/Hide</string>
+    <string name="add_task">Add task</string>
+    <string name="less_important_task">Low importance</string>
+</resources>

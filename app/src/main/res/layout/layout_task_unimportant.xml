@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:paddingVertical="7dp"
+    android:gravity="center"
+
+    android:orientation="horizontal">
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        style="@style/UnimportantCheckBoxTask"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+
+        android:layout_weight="1"
+        tools:text="Купить что-то" />
+
+    <ImageView
+        style="@style/ImageViewTaskInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginHorizontal="20dp"
+
+        android:background="@drawable/ic_info_light"
+        android:contentDescription="@string/info" />
+
+</LinearLayout>

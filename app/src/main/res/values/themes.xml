@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.Light">
+        <item name="android:windowBackground">@color/light_background</item>
+        <item name="android:textColor">@color/text_color_for_light</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextViewHeader" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="UnimportantCheckBoxTask" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/unimportant_checkbox_border_color</item>
+    </style>
+
+    <style name="ImportantCheckBoxTask" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/important_checkbox_border_color</item>
+    </style>
+
+    <style name="Widget.textViewSubhead" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/text_color_for_light_subhead</item>
+    </style>
+
+    <style name="Widget.floatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:backgroundTint">@color/button_add</item>
+    </style>
+
+    <style name="TasksBackground">
+        <item name="android:background">@drawable/tasks_rect_background_light</item>
+    </style>
+
+    <style name="ImageViewTaskInfo">
+        <item name="android:src">@drawable/ic_info_light</item>
+    </style>
+
+    <style name="ImageViewArrowDown">
+        <item name="android:src">@drawable/ic_arrow_down_light</item>
+    </style>
+</resources>

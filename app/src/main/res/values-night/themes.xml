@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:textColor">@color/text_color_for_night</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextViewHeader" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="UnimportantCheckBoxTask" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/checkbox_color_dark</item>
+    </style>
+
+    <style name="Widget.textViewSubhead" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/text_color_for_dark_subhead</item>
+    </style>
+
+    <style name="TasksBackground">
+        <item name="android:background">@drawable/tasks_rect_background_night</item>
+    </style>
+
+    <style name="ImageViewTaskInfo">
+        <item name="android:src">@drawable/ic_info_night</item>
+    </style>
+
+    <style name="ImageViewArrowDown">
+        <item name="android:src">@drawable/ic_arrow_down_night</item>
+    </style>
+</resources>

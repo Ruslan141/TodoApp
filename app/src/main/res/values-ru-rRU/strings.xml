@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_tasks">Мои дела</string>
+    <string name="info">Информация</string>
+    <string name="completed">Выполнено</string>
+    <string name="new_task">Новое</string>
+    <string name="show_or_hide">Показать/Скрыть</string>
+    <string name="add_task">Добавить задачу</string>
+    <string name="less_important_task">Низкая важность</string>
+</resources>
