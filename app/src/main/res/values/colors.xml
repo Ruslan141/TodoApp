@@ -14,6 +14,10 @@
     <color name="text_color_for_dark_subhead">#40ffffff</color>
     <color name="show_hide_button">#007AFF</color>
     <color name="button_add">#007AFF</color>
+    <color name="primary">#007AFF</color>
     <color name="important_attention_text">#FF3B30</color>
     <color name="important_checkbox_border_color">#FF3B30</color>
+    <color name="transparent">#00000000</color>
+    <color name="separator_light">#20000000</color>
+    <color name="separator_night">#20ffffff</color>
 </resources>

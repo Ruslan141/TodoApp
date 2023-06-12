@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/primary</item>
         <item name="android:windowBackground">@color/background_dark</item>
         <item name="android:textColor">@color/text_color_for_night</item>
         <item name="android:textSize">20sp</item>
@@ -28,5 +29,22 @@
 
     <style name="ImageViewArrowDown">
         <item name="android:src">@drawable/ic_arrow_down_night</item>
+    </style>
+
+    <style name="EditTextLayoutTaskInput">
+        <item name="android:background">@drawable/edit_text_tasks_input_background_night</item>
+    </style>
+
+    <style name="EditTextTaskInput">
+        <item name="android:background">@drawable/edit_text_tasks_input_background_night</item>
+        <item name="android:minLines">4</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Separator">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@drawable/separator_night</item>
     </style>
 </resources>

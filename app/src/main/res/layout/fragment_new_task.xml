@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.fragments.NewTodoItemFragment">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/EditTextLayoutTaskInput"
+
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+
+        app:boxStrokeWidth="0dp"
+
+        app:boxStrokeWidthFocused="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInput_task"
+            style="@style/EditTextTaskInput"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+
+            android:hint="@string/what_should_be_done"
+
+            android:maxLength="256" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_importance"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="32dp"
+        android:text="@string/importance"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+    <Spinner
+        android:id="@+id/spinner_importance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="@id/textView_importance"
+        app:layout_constraintTop_toBottomOf="@id/textView_importance" />
+
+    <View
+        android:id="@+id/importance_separator"
+        style="@style/Separator"
+        android:layout_width="0dp"
+        android:layout_margin="16dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_importance" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayout_make_up"
+        android:layout_width="match_parent"
+
+        android:layout_margin="16dp"
+
+        android:gravity="center"
+
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="32dp"
+        android:text="@string/importance"
+        app:layout_constraintStart_toStartOf="@+id/importance_separator"
+        app:layout_constraintTop_toBottomOf="@+id/importance_separator">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_make_up"
+            android:layout_width="0dp"
+
+            android:layout_weight="1"
+
+            android:layout_height="wrap_content"
+            android:text="@string/importance"
+            app:layout_constraintStart_toStartOf="@+id/importance_separator"
+            app:layout_constraintTop_toBottomOf="@+id/importance_separator" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

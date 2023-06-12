@@ -1,109 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.fragments.TasksFragment">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="22dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
 
-        android:layout_height="22dp"
-
-        android:layout_marginEnd="20dp"
-
-        android:contentDescription="@string/show_or_hide"
-        android:src="@drawable/ic_show"
-
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout_header"
-        app:layout_constraintEnd_toEndOf="@id/linearLayout_tasks" />
-
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayout_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/materialTextView"
-            style="@style/TextViewHeader"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="82dp"
-            android:text="@string/my_tasks" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            style="@style/Widget.textViewSubhead"
-            android:text="@string/completed" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayout_tasks"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        tools:context=".presentation.fragments.TodoItemsFragment">
 
-        style="@style/TasksBackground"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="22dp"
 
-        android:orientation="vertical"
+            android:layout_height="22dp"
 
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="28dp"
+            android:layout_marginEnd="20dp"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout_header">
+            android:contentDescription="@string/show_or_hide"
+            android:src="@drawable/ic_show"
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_tasks"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout_header"
+            app:layout_constraintEnd_toEndOf="@id/linearLayout_tasks" />
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/materialTextView"
+                style="@style/TextViewHeader"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="82dp"
+                android:text="@string/my_tasks" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                style="@style/Widget.textViewSubhead"
+                android:text="@string/completed" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout_tasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            tools:itemCount="0"
+            style="@style/TasksBackground"
 
-            tools:listitem="@layout/layout_task_unimportant" />
+            android:orientation="vertical"
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textView_add_new_task"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="28dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout_header">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                tools:itemCount="0"
+
+                tools:listitem="@layout/layout_task_unimportant" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textView_add_new_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                style="@style/Widget.textViewSubhead"
+                android:text="@string/new_task"
+
+                android:layout_marginVertical="14dp"
+
+                android:layout_marginStart="50dp"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingButton_add_new_task"
+            style="@style/Widget.floatingActionButton"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            style="@style/Widget.textViewSubhead"
-            android:text="@string/new_task"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="40dp"
 
-            android:layout_marginVertical="14dp"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@android:color/white"
 
-            android:layout_marginStart="50dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/add_task" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/Widget.floatingActionButton"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="40dp"
-
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@android:color/white"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_task" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
