@@ -12,6 +12,15 @@ class MockTodoItemDataSource : TodoItemDataSource {
 
     private val todoItems: MutableList<TodoItemEntity> = mutableListOf(
         TodoItemEntity(
+            "4",
+            "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.",
+            Importance.IMPORTANT,
+            Date(),
+            false,
+            Date(),
+            Date()
+        ),
+        TodoItemEntity(
             "1",
             "Написать что-то",
             Importance.LESS_IMPORTANT,
@@ -110,8 +119,24 @@ class MockTodoItemDataSource : TodoItemDataSource {
             Date(),
             Date()
         ),
-        TodoItemEntity("4", "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.", Importance.IMPORTANT, Date(), false, Date(), Date()),
-        TodoItemEntity("4", "Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. ", Importance.IMPORTANT, Date(), false, Date(), Date()),
+        TodoItemEntity(
+            "4",
+            "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.",
+            Importance.IMPORTANT,
+            Date(),
+            false,
+            Date(),
+            Date()
+        ),
+        TodoItemEntity(
+            "4",
+            "Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. Тестовые данные. ",
+            Importance.IMPORTANT,
+            Date(),
+            false,
+            Date(),
+            Date()
+        ),
         TodoItemEntity(
             "12",
             "Написать что-то",

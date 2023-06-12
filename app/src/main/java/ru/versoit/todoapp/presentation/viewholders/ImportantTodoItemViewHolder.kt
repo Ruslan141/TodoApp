@@ -16,38 +16,38 @@ class ImportantTodoItemViewHolder(private val binding: LayoutTaskImportantBindin
         binding.textViewText.text = model.text
         binding.checkBoxState.isChecked = model.execution
 
+        setTextState(!model.execution)
+
         itemView.setOnClickListener {
-            if (binding.checkBoxState.isChecked) {
-                binding.textViewText.animateRemoveStrikeThrough()
-                binding.checkBoxState.isChecked = false
-            }
-            else {
-                binding.textViewText.animateStrikeThrough()
-                binding.checkBoxState.isChecked = true
-            }
+            setTextState(binding.checkBoxState.isChecked)
             Snackbar.make(itemView, model.id, Snackbar.LENGTH_LONG).show()
         }
 
         itemView.setOnClickListener {
-            if (binding.checkBoxState.isChecked) {
-                binding.textViewText.animateRemoveStrikeThrough()
-                binding.checkBoxState.isChecked = false
-            }
-            else {
-                binding.textViewText.animateStrikeThrough()
-                binding.checkBoxState.isChecked = true
-            }
+            setTextState(binding.checkBoxState.isChecked)
+            binding.checkBoxState.isChecked = !binding.checkBoxState.isChecked
             Snackbar.make(itemView, model.id, Snackbar.LENGTH_LONG).show()
         }
 
         binding.checkBoxState.setOnCheckedChangeListener { _, isChecked ->
-            if (!isChecked) {
-                binding.textViewText.animateRemoveStrikeThrough()
-            }
-            else {
-                binding.textViewText.animateStrikeThrough()
-            }
+            setTextState(!isChecked)
             Snackbar.make(itemView, model.id, Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    private fun setTextState(isChecked: Boolean) {
+        if (isChecked)
+            binding.textViewText.animateRemoveStrikeThrough()
+        else
+            binding.textViewText.animateStrikeThrough()
+
+        binding.textViewText.alpha = if (isChecked) ACTIVE else NOT_ACTIVE
+    }
+
+    companion object {
+
+        const val NOT_ACTIVE = 0.2f
+
+        const val ACTIVE = 1f
     }
 }
