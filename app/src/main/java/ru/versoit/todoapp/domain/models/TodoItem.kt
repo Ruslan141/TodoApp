@@ -13,7 +13,7 @@ data class TodoItem(
     var text: String,
     var importance: Importance,
     var deadline: Date,
-    var execution: Boolean,
+    var state: Boolean,
     var dateCreate: Date,
     var dateChange: Date
 )

@@ -5,10 +5,13 @@
     <string name="completed">Выполнено</string>
     <string name="new_task">Новое</string>
     <string name="show_or_hide">Показать/Скрыть</string>
-    <string name="add_task">Добавить задачу</string>
+    <string name="add_task">Добавить</string>
     <string name="less_important_task">Низкая важность</string>
     <string name="save">Сохранить</string>
     <string name="what_should_be_done">Что нужно сделать…</string>
     <string name="importance">Важность</string>
     <string name="make_up">Сделать до</string>
+    <string name="cancel">Отменить</string>
+    <string name="invalid_text">Введите текст</string>
+    <string name="invalid_date">Неверная дата</string>
 </resources>

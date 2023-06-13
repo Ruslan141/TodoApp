@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.DayNight">
+    <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
-        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:windowBackground">@color/night_background</item>
         <item name="android:textColor">@color/text_color_for_night</item>
         <item name="android:textSize">20sp</item>
+        <item name="color_unchecked">@color/checkbox_color_night</item>
+        <item name="color_background_window">@color/night_background</item>
+        <item name="white_button_color">@color/cancel_button_night</item>
+        <item name="switch_track_color_checked">@color/switch_track_activated_color_light</item>
+        <item name="switch_thumb_color_unchecked">@color/unchecked_switch_thumb_night</item>
+        <item name="switch_track_color_unchecked">@color/switch_track_color_unchecked_night</item>
     </style>
 
     <style name="TextViewHeader" parent="Widget.MaterialComponents.TextView">
         <item name="android:textSize">32sp</item>
     </style>
 
-    <style name="UnimportantCheckBoxTask" parent="Widget.Material3.CompoundButton.CheckBox">
-        <item name="buttonTint">@color/checkbox_color_dark</item>
-    </style>
-
     <style name="Widget.textViewSubhead" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/text_color_for_dark_subhead</item>
+        <item name="android:textColor">@color/text_color_for_night_subhead</item>
     </style>
 
     <style name="TasksBackground">
@@ -46,5 +48,13 @@
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@drawable/separator_night</item>
+    </style>
+
+    <style name="ButtonWhite" parent="ShapeAppearanceOverlay.Material3.Button">
+        <item name="colorPrimary">@color/activated</item>
+        <item name="colorAccent">?attr/white_button_color</item>
+        <item name="colorSurface">?attr/white_button_color</item>
+        <item name="android:backgroundTint">?attr/white_button_color</item>
+        <item name="android:textColor">?attr/white_button_color</item>
     </style>
 </resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="color_unchecked" format="color|reference"/>
+    <attr name="color_background_window" format="color|reference"/>
+    <attr name="white_button_color" format="color|reference"/>
+    <attr name="switch_track_color_checked" format="color|reference"/>
+    <attr name="switch_thumb_color_unchecked" format="color|reference"/>
+    <attr name="switch_track_color_unchecked" format="color|reference"/>
+</resources>

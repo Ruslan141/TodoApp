@@ -5,11 +5,14 @@
     <string name="completed">Completed</string>
     <string name="new_task">New</string>
     <string name="show_or_hide">Show/Hide</string>
-    <string name="add_task">Add task</string>
+    <string name="add_task">Add</string>
     <string name="less_important_task">Low importance</string>
     <string name="save">Save</string>
     <string name="importance">Importance</string>
     <string name="make_up">Make up</string>
     <string name="what_should_be_done">What should be done…</string>
     <string name="important" translatable="false">!!</string>
+    <string name="cancel">Cancel</string>
+    <string name="invalid_text">Invalid text</string>
+    <string name="invalid_date">Invalid date</string>
 </resources>

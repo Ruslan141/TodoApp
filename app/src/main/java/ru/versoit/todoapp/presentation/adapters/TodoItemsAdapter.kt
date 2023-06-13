@@ -11,8 +11,9 @@ import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.viewholders.ImportantTodoItemViewHolder
 import ru.versoit.todoapp.presentation.viewholders.LessImportantTodoItemViewHolder
 import ru.versoit.todoapp.presentation.viewholders.UnimportantTodoItemViewHolder
+import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 
-class TodoItemsAdapter : ListAdapter<TodoItem, RecyclerView.ViewHolder>(ItemDiffCallback()) {
+class TodoItemsAdapter(private val todoItemUpdater: TodoItemUpdater) : ListAdapter<TodoItem, RecyclerView.ViewHolder>(ItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -21,19 +22,23 @@ class TodoItemsAdapter : ListAdapter<TodoItem, RecyclerView.ViewHolder>(ItemDiff
 
             Importance.UNIMPORTANT -> {
                 val itemView = inflater.inflate(R.layout.layout_task_unimportant, parent, false)
-                UnimportantTodoItemViewHolder(itemView)
+                UnimportantTodoItemViewHolder(itemView, todoItemUpdater)
             }
 
             Importance.LESS_IMPORTANT -> {
                 val itemView = inflater.inflate(R.layout.layout_task_less_important, parent, false)
-                LessImportantTodoItemViewHolder(itemView)
+                LessImportantTodoItemViewHolder(itemView, todoItemUpdater)
             }
 
             Importance.IMPORTANT -> {
                 val itemView = inflater.inflate(R.layout.layout_task_important, parent, false)
-                ImportantTodoItemViewHolder(itemView)
+                ImportantTodoItemViewHolder(itemView, todoItemUpdater)
             }
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).id.hashCode().toLong()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

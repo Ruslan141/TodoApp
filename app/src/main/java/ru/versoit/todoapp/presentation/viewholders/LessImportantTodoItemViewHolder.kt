@@ -1,53 +1,47 @@
 package ru.versoit.todoapp.presentation.viewholders
 
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import ru.versoit.todoapp.databinding.LayoutTaskLessImportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 
-class LessImportantTodoItemViewHolder(private val binding: LayoutTaskLessImportantBinding) :
+class LessImportantTodoItemViewHolder(
+    private val binding: LayoutTaskLessImportantBinding,
+    private val todoItemUpdater: TodoItemUpdater
+) :
     RecyclerView.ViewHolder(binding.root), TodoItemsAdapter.ViewHolder {
 
-    constructor(view: View) : this(LayoutTaskLessImportantBinding.bind(view))
+    constructor(view: View, todoItemUpdater: TodoItemUpdater) : this(
+        LayoutTaskLessImportantBinding.bind(view),
+        todoItemUpdater
+    ) {
+        binding.textViewText.isAlphaAnimate = true
+    }
+
     override fun bind(model: TodoItem) {
         binding.textViewText.text = model.text
-        binding.checkBoxState.isChecked = model.execution
+        binding.checkBoxState.isChecked = model.state
 
-        setTextState(!model.execution)
+        setTextState(model.state)
 
-        itemView.setOnClickListener {
-            setTextState(binding.checkBoxState.isChecked)
-            Snackbar.make(itemView, model.id, Snackbar.LENGTH_LONG).show()
-        }
 
         itemView.setOnClickListener {
-            setTextState(binding.checkBoxState.isChecked)
+            Log.e("setOnClickListener", "on clicklistener")
+            setTextState(!binding.checkBoxState.isChecked)
             binding.checkBoxState.isChecked = !binding.checkBoxState.isChecked
-            Snackbar.make(itemView, model.id, Snackbar.LENGTH_LONG).show()
-        }
-
-        binding.checkBoxState.setOnCheckedChangeListener { _, isChecked ->
-            setTextState(!isChecked)
-            Snackbar.make(itemView, model.id, Snackbar.LENGTH_LONG).show()
+            model.state = binding.checkBoxState.isChecked
+            todoItemUpdater.updateTodoItem(model)
         }
     }
 
     private fun setTextState(isChecked: Boolean) {
-        if (isChecked)
+
+        if (!isChecked)
             binding.textViewText.animateRemoveStrikeThrough()
         else
             binding.textViewText.animateStrikeThrough()
-
-        binding.textViewText.alpha = if (isChecked) ACTIVE else NOT_ACTIVE
     }
-
-    companion object {
-
-        const val NOT_ACTIVE = 0.2f
-
-        const val ACTIVE = 1f
-    }
-
 }

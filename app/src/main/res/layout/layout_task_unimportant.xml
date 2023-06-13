@@ -11,8 +11,9 @@
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkBox_state"
-        style="@style/UnimportantCheckBoxTask"
+        android:buttonTint="@color/unimportant_checkbox_button_tint"
         android:layout_width="wrap_content"
+        android:clickable="false"
 
         android:layout_height="wrap_content" />
 

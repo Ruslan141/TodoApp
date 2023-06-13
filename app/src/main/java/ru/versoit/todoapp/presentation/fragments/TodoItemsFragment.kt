@@ -12,6 +12,10 @@ import ru.versoit.todoapp.R
 import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
 import ru.versoit.todoapp.data.storage.datasources.mock.MockTodoItemDataSource
 import ru.versoit.todoapp.databinding.FragmentTasksBinding
+import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
+import ru.versoit.todoapp.domain.usecase.GetTodoItemByIdUseCase
+import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
+import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemsViewModel
 import ru.versoit.todoapp.presentation.vmfactory.TodoItemsViewModelFactory
@@ -22,7 +26,13 @@ class TodoItemsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: TodoItemsViewModel by viewModels {
-        TodoItemsViewModelFactory(TodoItemRepositoryImpl(MockTodoItemDataSource()))
+
+        TodoItemsViewModelFactory(
+            TodoItemUpdateUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
+            TodoItemRemoveUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
+            GetTodoItemByIdUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
+            GetAllTodoItemsUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
+        )
     }
 
     override fun onCreateView(
@@ -56,13 +66,16 @@ class TodoItemsFragment : Fragment() {
     private fun createItemsList() {
 
         val recyclerView = binding.recyclerViewTasks
-        val adapter = TodoItemsAdapter()
+        val adapter = TodoItemsAdapter(viewModel)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         viewModel.todoItems.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+
+            val completedText = "${getString(R.string.completed)} - ${viewModel.readyStatesAmount}"
+            binding.textViewCompleted.text = completedText
         }
     }
 

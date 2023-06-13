@@ -11,11 +11,11 @@ enum class Importance {
 }
 
 data class TodoItemEntity(
-    val id: String,
+    var id: String,
     var text: String,
     var importance: Importance,
     var deadline: Date,
-    var execution: Boolean,
+    var state: Boolean,
     var dateCreate: Date,
     var dateChange: Date
 ) {
@@ -25,7 +25,7 @@ data class TodoItemEntity(
             text,
             importance,
             deadline,
-            execution,
+            state,
             dateCreate,
             dateChange
         )

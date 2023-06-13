@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/color_background_window">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -17,9 +18,14 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="22dp"
+                android:layout_width="wrap_content"
 
-                android:layout_height="22dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+
+                android:padding="10dp"
+
+                android:layout_height="wrap_content"
 
                 android:layout_marginEnd="20dp"
 
@@ -51,25 +57,26 @@
                     android:text="@string/my_tasks" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
+                    android:id="@+id/textView_completed"
                     style="@style/Widget.textViewSubhead"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
                     android:text="@string/completed" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/linearLayout_tasks"
+                style="@style/TasksBackground"
                 android:layout_width="match_parent"
+
                 android:layout_height="wrap_content"
 
-                style="@style/TasksBackground"
-
-                android:orientation="vertical"
-
                 android:layout_marginHorizontal="8dp"
+
                 android:layout_marginTop="28dp"
+                android:orientation="vertical"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -86,15 +93,19 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textView_add_new_task"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
                     style="@style/Widget.textViewSubhead"
-                    android:text="@string/new_task"
+                    android:layout_width="wrap_content"
 
-                    android:layout_marginVertical="14dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
 
-                    android:layout_marginStart="50dp"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+
+                    android:layout_marginStart="50dp"
+
+                    android:text="@string/new_task" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -109,13 +120,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
+
         android:layout_marginBottom="40dp"
+        android:contentDescription="@string/add_task"
 
         app:srcCompat="@drawable/ic_add"
-        app:tint="@android:color/white"
-
-        android:layout_gravity="bottom|end"
-        android:contentDescription="@string/add_task" />
+        app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
