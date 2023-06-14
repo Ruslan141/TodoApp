@@ -9,7 +9,7 @@
         android:id="@+id/tasksFragment"
         android:name="ru.versoit.todoapp.presentation.fragments.TodoItemsFragment"
         android:label="fragment_tasks"
-        tools:layout="@layout/fragment_tasks" >
+        tools:layout="@layout/fragment_todo_items" >
         <action
             android:id="@+id/action_tasksFragment_to_newTask"
             app:destination="@id/newTask"
@@ -22,5 +22,5 @@
         android:id="@+id/newTask"
         android:name="ru.versoit.todoapp.presentation.fragments.NewTodoItemFragment"
         android:label="fragment_new_task"
-        tools:layout="@layout/fragment_new_task" />
+        tools:layout="@layout/fragment_new_todo_item" />
 </navigation>

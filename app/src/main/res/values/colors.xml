@@ -11,7 +11,7 @@
     <color name="text_color_for_light">#000000</color>
     <color name="text_color_for_night">#ffffff</color>
     <color name="text_color_for_light_subhead">#30000000</color>
-    <color name="text_color_for_night_subhead">#40ffffff</color>
+    <color name="text_color_for_night_subhead">#60ffffff</color>
     <color name="show_hide_button">#007AFF</color>
     <color name="button_add">#007AFF</color>
     <color name="primary">#007AFF</color>
@@ -28,4 +28,6 @@
     <color name="switch_track_color_unchecked_night">#252528</color>
     <color name="switch_track_color_unchecked_light">#10000000</color>
     <color name="invalid">#FF3B30</color>
+    <color name="todo_item_date_text_color_light">#30000000</color>
+    <color name="todo_item_date_text_color_night">#60FFFFFF</color>
 </resources>

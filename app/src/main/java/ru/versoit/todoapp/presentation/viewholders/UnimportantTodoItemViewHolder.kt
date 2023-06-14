@@ -2,20 +2,19 @@ package ru.versoit.todoapp.presentation.viewholders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import ru.versoit.todoapp.databinding.LayoutTaskUnimportantBinding
+import ru.versoit.todoapp.databinding.TaskUnimportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 
 class UnimportantTodoItemViewHolder(
-    private val binding: LayoutTaskUnimportantBinding,
+    private val binding: TaskUnimportantBinding,
     private val todoItemUpdater: TodoItemUpdater
 ) :
     RecyclerView.ViewHolder(binding.root), TodoItemsAdapter.ViewHolder {
 
     constructor(view: View, todoItemUpdater: TodoItemUpdater) : this(
-        LayoutTaskUnimportantBinding.bind(view),
+        TaskUnimportantBinding.bind(view),
         todoItemUpdater
     ) {
         binding.textViewText.isAlphaAnimate = true

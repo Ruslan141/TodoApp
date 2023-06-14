@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
 import ru.versoit.todoapp.data.storage.datasources.mock.MockTodoItemDataSource
-import ru.versoit.todoapp.databinding.FragmentTasksBinding
+import ru.versoit.todoapp.databinding.FragmentTodoItemsBinding
 import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
 import ru.versoit.todoapp.domain.usecase.GetTodoItemByIdUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
@@ -22,7 +23,7 @@ import ru.versoit.todoapp.presentation.vmfactory.TodoItemsViewModelFactory
 
 class TodoItemsFragment : Fragment() {
 
-    private var _binding: FragmentTasksBinding? = null
+    private var _binding: FragmentTodoItemsBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: TodoItemsViewModel by viewModels {
@@ -41,7 +42,7 @@ class TodoItemsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentTasksBinding.inflate(inflater, container, false)
+        _binding = FragmentTodoItemsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -61,6 +62,19 @@ class TodoItemsFragment : Fragment() {
         }
 
         createItemsList()
+
+        binding.imageViewHideShow.setOnClickListener {
+
+            if (viewModel.isHidden) {
+                viewModel.showCompletedTodoItems()
+                binding.imageViewHideShow.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_show))
+                return@setOnClickListener
+            }
+
+            viewModel.hideCompletedTodoItems()
+            binding.imageViewHideShow.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_hide))
+            viewModel.hideCompletedTodoItems()
+        }
     }
 
     private fun createItemsList() {
@@ -71,7 +85,7 @@ class TodoItemsFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        viewModel.todoItems.observe(viewLifecycleOwner) {
+        viewModel.todoItemsObservable.observe(viewLifecycleOwner) {
             adapter.submitList(it)
 
             val completedText = "${getString(R.string.completed)} - ${viewModel.readyStatesAmount}"

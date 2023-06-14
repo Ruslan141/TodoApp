@@ -3,19 +3,19 @@ package ru.versoit.todoapp.presentation.viewholders
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import ru.versoit.todoapp.databinding.LayoutTaskLessImportantBinding
+import ru.versoit.todoapp.databinding.TaskLessImportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 
 class LessImportantTodoItemViewHolder(
-    private val binding: LayoutTaskLessImportantBinding,
+    private val binding: TaskLessImportantBinding,
     private val todoItemUpdater: TodoItemUpdater
 ) :
     RecyclerView.ViewHolder(binding.root), TodoItemsAdapter.ViewHolder {
 
     constructor(view: View, todoItemUpdater: TodoItemUpdater) : this(
-        LayoutTaskLessImportantBinding.bind(view),
+        TaskLessImportantBinding.bind(view),
         todoItemUpdater
     ) {
         binding.textViewText.isAlphaAnimate = true

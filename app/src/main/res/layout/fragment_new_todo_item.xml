@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/textView_add_task"
+        android:id="@+id/textView_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -82,17 +82,28 @@
         android:id="@+id/textView_importance"
         android:layout_width="wrap_content"
 
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+
         android:layout_height="wrap_content"
+
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
 
         android:layout_marginTop="32dp"
         android:text="@string/importance"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
-    <Spinner
-        android:id="@+id/spinner_importance"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_selected_importance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        style="@style/Widget.textViewSubhead"
+
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
 
         app:layout_constraintStart_toStartOf="@id/textView_importance"
         app:layout_constraintTop_toBottomOf="@id/textView_importance" />
@@ -105,7 +116,7 @@
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_importance" />
+        app:layout_constraintTop_toBottomOf="@id/textView_selected_importance" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/linearLayout_make_up"
@@ -125,6 +136,8 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textView_make_up"
             android:layout_width="0dp"
+
+            android:padding="10dp"
 
             android:alpha="0.2"
 
@@ -155,7 +168,8 @@
         android:visibility="gone"
 
         android:textColor="@color/primary"
-        android:padding="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp"
 
         android:background="?attr/selectableItemBackground"
         android:clickable="true"

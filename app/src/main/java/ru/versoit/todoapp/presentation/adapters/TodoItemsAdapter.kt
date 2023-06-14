@@ -21,17 +21,17 @@ class TodoItemsAdapter(private val todoItemUpdater: TodoItemUpdater) : ListAdapt
         return when (Importance.values()[viewType]) {
 
             Importance.UNIMPORTANT -> {
-                val itemView = inflater.inflate(R.layout.layout_task_unimportant, parent, false)
+                val itemView = inflater.inflate(R.layout.task_unimportant, parent, false)
                 UnimportantTodoItemViewHolder(itemView, todoItemUpdater)
             }
 
             Importance.LESS_IMPORTANT -> {
-                val itemView = inflater.inflate(R.layout.layout_task_less_important, parent, false)
+                val itemView = inflater.inflate(R.layout.task_less_important, parent, false)
                 LessImportantTodoItemViewHolder(itemView, todoItemUpdater)
             }
 
             Importance.IMPORTANT -> {
-                val itemView = inflater.inflate(R.layout.layout_task_important, parent, false)
+                val itemView = inflater.inflate(R.layout.task_important, parent, false)
                 ImportantTodoItemViewHolder(itemView, todoItemUpdater)
             }
         }

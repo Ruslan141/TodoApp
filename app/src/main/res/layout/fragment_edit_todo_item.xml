@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/color_background_window"
+    tools:context=".presentation.fragments.EditTodoItemFragment">
+
+    <ImageView
+        android:id="@+id/imageView_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginVertical="32dp"
+
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+
+        android:contentDescription="@string/cancel"
+
+        android:padding="10dp"
+
+        android:src="@drawable/ic_cancel"
+        app:layout_constraintStart_toStartOf="@id/textInputLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:background="?attr/selectableItemBackground"
+
+        android:clickable="true"
+        android:contentDescription="@string/cancel"
+
+        android:padding="10dp"
+
+        android:text="@string/save"
+        android:textAllCaps="true"
+
+        android:textColor="@color/primary"
+
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/imageView_cancel"
+        app:layout_constraintEnd_toEndOf="@id/textInputLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/EditTextLayoutTaskInput"
+
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+
+        android:layout_marginTop="32dp"
+
+        app:boxStrokeWidth="0dp"
+
+        app:boxStrokeWidthFocused="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView_cancel">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_task"
+            style="@style/EditTextTaskInput"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+
+            android:hint="@string/what_should_be_done"
+
+            android:maxLength="256" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_importance"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+
+        android:background="?attr/selectableItemBackground"
+
+        android:clickable="true"
+        android:paddingHorizontal="10dp"
+
+        android:paddingVertical="5dp"
+        android:text="@string/importance"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_selected_importance"
+        style="@style/Widget.textViewSubhead"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+
+        app:layout_constraintStart_toStartOf="@id/textView_importance"
+        app:layout_constraintTop_toBottomOf="@id/textView_importance" />
+
+    <View
+        android:id="@+id/importance_separator"
+        style="@style/Separator"
+        android:layout_width="0dp"
+        android:layout_margin="16dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_selected_importance" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayout_make_up"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+
+        android:layout_margin="16dp"
+
+        android:layout_marginTop="32dp"
+
+        android:gravity="center"
+        android:text="@string/importance"
+        app:layout_constraintStart_toStartOf="@+id/importance_separator"
+        app:layout_constraintTop_toBottomOf="@+id/importance_separator">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_make_up"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+
+            android:alpha="0.2"
+
+            android:padding="10dp"
+            android:text="@string/make_up"
+
+            app:layout_constraintStart_toStartOf="@+id/importance_separator"
+            app:layout_constraintTop_toBottomOf="@+id/importance_separator" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:checked="false"
+            app:thumbTint="@color/switch_thumb_color"
+
+            app:trackTint="@color/switch_track_color" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:background="?attr/selectableItemBackground"
+
+        android:clickable="true"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp"
+
+        android:textColor="@color/primary"
+        android:visibility="invisible"
+
+        app:layout_constraintStart_toStartOf="@id/linearLayout_make_up"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_make_up" />
+
+    <View
+        android:id="@+id/remove_separator"
+        style="@style/Separator"
+        android:layout_width="0dp"
+        android:layout_marginVertical="16dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_deadline" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_remove"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="16dp"
+        android:drawableStart="@drawable/ic_remove"
+        android:drawablePadding="10dp"
+
+        android:background="?attr/selectableItemBackground"
+
+        android:padding="10dp"
+        android:text="@string/remove"
+
+        android:textColor="@color/important_attention_text"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout_make_up"
+        app:layout_constraintTop_toBottomOf="@+id/remove_separator" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

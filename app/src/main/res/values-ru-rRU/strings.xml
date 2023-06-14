@@ -14,4 +14,8 @@
     <string name="cancel">Отменить</string>
     <string name="invalid_text">Введите текст</string>
     <string name="invalid_date">Неверная дата</string>
+    <string name="no">Нет</string>
+    <string name="less">Низкий</string>
+    <string name="important">Высокий</string>
+    <string name="remove">Удалить</string>
 </resources>

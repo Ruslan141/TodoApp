@@ -22,19 +22,40 @@
         android:layout_marginEnd="10dp"
         android:textStyle="bold"
         android:textColor="@color/important_attention_text"
-        android:text="@string/important" />
+        android:text="@string/important_sign" />
 
-    <ru.versoit.todoapp.presentation.views.CustomTextView
-        android:id="@+id/textView_text"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="0dp"
-
-        tools:text="Test"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
 
-        android:ellipsize="end"
-        android:maxLines="3"
+        android:layout_weight="1">
 
-        android:layout_weight="1" />
+        <ru.versoit.todoapp.presentation.views.CustomTextView
+            android:id="@+id/textView_text"
+            android:layout_width="match_parent"
+
+            tools:text="Test"
+            android:layout_height="wrap_content"
+
+            android:ellipsize="end"
+            android:maxLines="3" />
+
+        <ru.versoit.todoapp.presentation.views.CustomTextView
+            android:id="@+id/textView_deadline"
+            android:layout_width="match_parent"
+
+            android:textColor="?attr/todo_item_date_text_color"
+
+            android:visibility="gone"
+
+            android:textSize="14sp"
+            android:layout_height="wrap_content"
+
+            android:ellipsize="end"
+            android:maxLines="3" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ImageView
         android:id="@+id/imageView_info"

@@ -13,10 +13,17 @@ import java.util.Locale
 
 class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) : ViewModel() {
 
-    private var _currentDate: MutableLiveData<Date> = MutableLiveData(Date())
+    private var _currentDate = MutableLiveData(Date())
     val currentDate: LiveData<Date> = _currentDate
 
+    private var _importance = MutableLiveData(Importance.UNIMPORTANT)
+    var importance: LiveData<Importance> = _importance
+
     var text = ""
+
+    fun updateImportance(importance: Importance) {
+        _importance.value = importance
+    }
 
     val formattedDate: String
         get() = SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(
@@ -34,7 +41,7 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
     fun save() {
 
         val todoItem =
-            TodoItem("", text, Importance.IMPORTANT, currentDate.value!!, false, Date(), Date())
+            TodoItem("", text, importance.value!!, currentDate.value!!, false, Date(), Date())
 
         addTodoItemUseCase.addTodoItem(todoItem)
     }
@@ -79,7 +86,7 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
         calendar.set(Calendar.HOUR, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
-        
+
         return calendar.time
     }
 }
