@@ -34,8 +34,9 @@ class TodoItemRepositoryImpl(private val todoItemDataSource: TodoItemDataSource)
         todoItem.text,
         todoItem.importance,
         todoItem.deadline,
-        todoItem.state,
+        todoItem.completed,
+        todoItem.isDeadline,
         todoItem.dateCreate,
-        todoItem.dateChange
+        todoItem.lastChanged
     )
 }

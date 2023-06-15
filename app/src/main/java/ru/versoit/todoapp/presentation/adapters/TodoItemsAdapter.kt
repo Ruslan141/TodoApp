@@ -2,18 +2,25 @@ package ru.versoit.todoapp.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.models.TodoItem
+import ru.versoit.todoapp.presentation.fragments.TodoItemEditor
 import ru.versoit.todoapp.presentation.viewholders.ImportantTodoItemViewHolder
 import ru.versoit.todoapp.presentation.viewholders.LessImportantTodoItemViewHolder
 import ru.versoit.todoapp.presentation.viewholders.UnimportantTodoItemViewHolder
+import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 
-class TodoItemsAdapter(private val todoItemUpdater: TodoItemUpdater) : ListAdapter<TodoItem, RecyclerView.ViewHolder>(ItemDiffCallback()) {
+class TodoItemsAdapter(
+    private val todoItemUpdater: TodoItemUpdater,
+    private val todoItemRemover: TodoItemRemover,
+    private val todoItemEditor: TodoItemEditor,
+) : ListAdapter<TodoItem, RecyclerView.ViewHolder>(ItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -42,6 +49,35 @@ class TodoItemsAdapter(private val todoItemUpdater: TodoItemUpdater) : ListAdapt
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+        holder.itemView.setOnLongClickListener { it ->
+            val popupMenu = PopupMenu(it.context, it)
+            popupMenu.inflate(R.menu.menu_opens)
+            popupMenu.show()
+
+            popupMenu.setOnMenuItemClickListener {
+
+                when (it.itemId) {
+                    R.id.remove -> {
+                        todoItemRemover.removeTodoItem(position)
+                        true
+                    }
+
+                    R.id.edit -> {
+                        todoItemEditor.edit(getItem(position))
+                        true
+                    }
+
+                    else -> true
+                }
+            }
+
+            false
+        }
+
+        holder.itemView.setOnClickListener {
+            todoItemEditor.edit(getItem(position))
+        }
 
         if (holder is ViewHolder)
             holder.bind(getItem(position))

@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
+    android:background="?attr/selectableItemBackground"
+
     android:paddingVertical="7dp"
     android:gravity="center"
 
@@ -14,20 +16,40 @@
         android:buttonTint="@color/unimportant_checkbox_button_tint"
         android:layout_width="wrap_content"
         android:clickable="false"
-
         android:layout_height="wrap_content" />
 
-    <ru.versoit.todoapp.presentation.views.CustomTextView
-        android:id="@+id/textView_text"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="0dp"
-
-        tools:text="Test"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
 
-        android:ellipsize="end"
-        android:maxLines="3"
+        android:layout_weight="1">
 
-        android:layout_weight="1" />
+        <ru.versoit.todoapp.presentation.views.CustomTextView
+            android:id="@+id/textView_text"
+            android:layout_width="match_parent"
+
+            tools:text="Test"
+            android:layout_height="wrap_content"
+
+            android:ellipsize="end"
+            android:maxLines="3" />
+
+        <ru.versoit.todoapp.presentation.views.CustomTextView
+            android:id="@+id/textView_deadline"
+            android:layout_width="match_parent"
+
+            android:textColor="?attr/todo_item_date_text_color"
+
+            android:visibility="gone"
+
+            android:textSize="14sp"
+            android:layout_height="wrap_content"
+
+            android:ellipsize="end"
+            android:maxLines="3" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ImageView
         style="@style/ImageViewTaskInfo"

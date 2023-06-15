@@ -7,4 +7,5 @@
     <attr name="switch_thumb_color_unchecked" format="color|reference"/>
     <attr name="switch_track_color_unchecked" format="color|reference"/>
     <attr name="todo_item_date_text_color" format="color|reference"/>
+    <attr name="nav_bar_background" format="color|reference"/>
 </resources>

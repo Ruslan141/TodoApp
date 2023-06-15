@@ -6,6 +6,8 @@ import ru.versoit.todoapp.databinding.TaskUnimportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class UnimportantTodoItemViewHolder(
     private val binding: TaskUnimportantBinding,
@@ -22,15 +24,21 @@ class UnimportantTodoItemViewHolder(
 
     override fun bind(model: TodoItem) {
         binding.textViewText.text = model.text
-        binding.checkBoxState.isChecked = model.state
+        binding.checkBoxState.isChecked = model.completed
+        setTextState(model.completed)
 
-        setTextState(model.state)
-
-        itemView.setOnClickListener {
-            setTextState(!binding.checkBoxState.isChecked)
-            binding.checkBoxState.isChecked = !binding.checkBoxState.isChecked
-            model.state = binding.checkBoxState.isChecked
+        binding.checkBoxState.setOnClickListener {
+            setTextState(binding.checkBoxState.isChecked)
+            model.completed = binding.checkBoxState.isChecked
             todoItemUpdater.updateTodoItem(model)
+        }
+
+        if (model.isDeadline) {
+            binding.textViewDeadline.visibility = View.VISIBLE
+            binding.textViewDeadline.text =
+                SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(model.deadline)
+        } else {
+            binding.textViewDeadline.visibility = View.GONE
         }
     }
 

@@ -17,10 +17,26 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_tasksFragment_to_editTodoItemFragment"
+            app:destination="@id/editTodoItemFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
+        </action>
     </fragment>
     <fragment
         android:id="@+id/newTask"
         android:name="ru.versoit.todoapp.presentation.fragments.NewTodoItemFragment"
         android:label="fragment_new_task"
         tools:layout="@layout/fragment_new_todo_item" />
+    <fragment
+        android:id="@+id/editTodoItemFragment"
+        android:name="ru.versoit.todoapp.presentation.fragments.EditTodoItemFragment"
+        android:label="EditTodoItemFragment">
+        <argument
+            android:name="todoItem"
+            app:argType="ru.versoit.todoapp.domain.models.TodoItem" />
+    </fragment>
 </navigation>

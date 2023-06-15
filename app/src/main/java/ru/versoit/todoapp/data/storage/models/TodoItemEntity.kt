@@ -4,18 +4,13 @@ import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.models.Importance
 import java.util.Date
 
-enum class Importance {
-    Unimportant,
-    LessImportant,
-    Important
-}
-
 data class TodoItemEntity(
     var id: String,
     var text: String,
     var importance: Importance,
     var deadline: Date,
     var state: Boolean,
+    var isDeadline: Boolean,
     var dateCreate: Date,
     var dateChange: Date
 ) {
@@ -26,6 +21,7 @@ data class TodoItemEntity(
             importance,
             deadline,
             state,
+            isDeadline,
             dateCreate,
             dateChange
         )

@@ -6,14 +6,19 @@ import ru.versoit.todoapp.databinding.TaskImportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ImportantTodoItemViewHolder(
     private val binding: TaskImportantBinding,
-    private val todoItemStateUpdater: TodoItemUpdater
+    private val todoItemUpdater: TodoItemUpdater
 ) :
     RecyclerView.ViewHolder(binding.root), TodoItemsAdapter.ViewHolder {
 
-    constructor(view: View, todoItemUpdater: TodoItemUpdater) : this(
+    constructor(
+        view: View,
+        todoItemUpdater: TodoItemUpdater
+    ) : this(
         TaskImportantBinding.bind(view),
         todoItemUpdater
     ) {
@@ -22,15 +27,21 @@ class ImportantTodoItemViewHolder(
 
     override fun bind(model: TodoItem) {
         binding.textViewText.text = model.text
-        binding.checkBoxState.isChecked = model.state
+        binding.checkBoxState.isChecked = model.completed
+        setTextState(model.completed)
 
-        setTextState(model.state)
+        binding.checkBoxState.setOnClickListener {
+            setTextState(binding.checkBoxState.isChecked)
+            model.completed = binding.checkBoxState.isChecked
+            todoItemUpdater.updateTodoItem(model)
+        }
 
-        itemView.setOnClickListener {
-            setTextState(!binding.checkBoxState.isChecked)
-            binding.checkBoxState.isChecked = !binding.checkBoxState.isChecked
-            model.state = binding.checkBoxState.isChecked
-            todoItemStateUpdater.updateTodoItem(model)
+        if (model.isDeadline) {
+            binding.textViewDeadline.visibility = View.VISIBLE
+            binding.textViewDeadline.text =
+                SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(model.deadline)
+        } else {
+            binding.textViewDeadline.visibility = View.GONE
         }
     }
 

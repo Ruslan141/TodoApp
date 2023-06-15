@@ -36,6 +36,8 @@ class NewTodoItemFragment : Fragment() {
         private const val ACTIVE = 1f
     }
 
+    private lateinit var importanceMenu: PopupMenu
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -50,13 +52,9 @@ class NewTodoItemFragment : Fragment() {
 
     private fun init() {
 
-        binding.imageViewCancel.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        viewModel.deadline.observe(viewLifecycleOwner) {
 
-        viewModel.currentDate.observe(viewLifecycleOwner) {
-
-            if (viewModel.isInvalidDate) binding.textViewDeadline.setTextColor(
+            if (viewModel.isInvalidDeadline) binding.textViewDeadline.setTextColor(
                 ContextCompat.getColor(
                     this.requireContext(), R.color.invalid
                 )
@@ -70,12 +68,14 @@ class NewTodoItemFragment : Fragment() {
             binding.textViewDeadline.text = viewModel.formattedDate
         }
 
+        inflateImportanceSelectionMenu(binding.textViewImportance)
+
         binding.textViewImportance.setOnClickListener {
-            showPopupMenu(binding.textViewImportance)
+            importanceMenu.show()
         }
 
         binding.textViewSelectedImportance.setOnClickListener {
-            showPopupMenu(binding.textViewImportance)
+            importanceMenu.show()
         }
 
         binding.textViewDeadline.setOnClickListener {
@@ -90,6 +90,8 @@ class NewTodoItemFragment : Fragment() {
 
         binding.switchDeadline.setOnCheckedChangeListener { _, isChecked ->
 
+            viewModel.isDeadline = isChecked
+
             if (isChecked) {
                 binding.textViewDeadline.text = viewModel.formattedDate
                 binding.textViewDeadline.visibility = View.VISIBLE
@@ -98,24 +100,7 @@ class NewTodoItemFragment : Fragment() {
             }
             binding.textViewDeadline.visibility = View.GONE
             binding.textViewMakeUp.alpha = INACTIVE
-        }
 
-        binding.textViewSave.setOnClickListener {
-
-            viewModel.text = binding.editTextTask.text.toString()
-
-            if (viewModel.isInvalidDate) {
-                Snackbar.make(binding.root, R.string.invalid_date, Snackbar.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            if (viewModel.isInvalidText) {
-                Snackbar.make(binding.root, R.string.invalid_text, Snackbar.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            viewModel.save()
-            findNavController().navigateUp()
         }
 
         viewModel.importance.observe(viewLifecycleOwner) {
@@ -131,14 +116,34 @@ class NewTodoItemFragment : Fragment() {
                     getString(R.string.important)
             }
         }
+
+        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (scrollY > binding.imageViewCancel.top) {
+                binding.navBar.root.visibility = View.VISIBLE
+            }
+            else {
+                binding.navBar.root.visibility = View.GONE
+            }
+        }
+
+        binding.imageViewCancel.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        binding.navBar.imageViewCancelInNawBar.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        bindSaveEventTo(binding.textViewSave)
+        bindSaveEventTo(binding.navBar.textViewSaveInNavBar)
     }
 
-    private fun showPopupMenu(view: View) {
-        val popupMenu = PopupMenu(requireContext(), view)
-        val inflater = popupMenu.menuInflater
-        inflater.inflate(R.menu.popup_menu, popupMenu.menu)
+    private fun inflateImportanceSelectionMenu(view: View) {
+        importanceMenu = PopupMenu(requireContext(), view)
+        val inflater = importanceMenu.menuInflater
+        inflater.inflate(R.menu.popup_menu, importanceMenu.menu)
 
-        popupMenu.setOnMenuItemClickListener { item ->
+        importanceMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.unimportant -> {
                     viewModel.updateImportance(Importance.UNIMPORTANT)
@@ -159,7 +164,27 @@ class NewTodoItemFragment : Fragment() {
             }
 
         }
-        popupMenu.show()
+    }
+
+    private fun bindSaveEventTo(view: View) {
+
+        view.setOnClickListener {
+
+            viewModel.text = binding.editTextTask.text.toString()
+
+            if (viewModel.isInvalidDeadline) {
+                Snackbar.make(binding.root, R.string.invalid_date, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (viewModel.isInvalidText) {
+                Snackbar.make(binding.root, R.string.invalid_text, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            viewModel.save()
+            findNavController().navigateUp()
+        }
     }
 
     override fun onDestroy() {

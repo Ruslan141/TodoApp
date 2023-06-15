@@ -15,7 +15,11 @@
     <string name="invalid_text">Введите текст</string>
     <string name="invalid_date">Неверная дата</string>
     <string name="no">Нет</string>
-    <string name="less">Низкий</string>
-    <string name="important">Высокий</string>
+    <string name="less">Низкая</string>
+    <string name="important">Высокая</string>
     <string name="remove">Удалить</string>
+    <string name="undo">Отменить</string>
+    <string name="removed_todo_item">Задача удалена</string>
+    <string name="task_completed">Выполнено</string>
+    <string name="last_edit">Посл. редакт.</string>
 </resources>

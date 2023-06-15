@@ -1,12 +1,13 @@
 package ru.versoit.todoapp.presentation.viewholders
 
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import ru.versoit.todoapp.databinding.TaskLessImportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class LessImportantTodoItemViewHolder(
     private val binding: TaskLessImportantBinding,
@@ -23,22 +24,25 @@ class LessImportantTodoItemViewHolder(
 
     override fun bind(model: TodoItem) {
         binding.textViewText.text = model.text
-        binding.checkBoxState.isChecked = model.state
+        binding.checkBoxState.isChecked = model.completed
+        setTextState(model.completed)
 
-        setTextState(model.state)
-
-
-        itemView.setOnClickListener {
-            Log.e("setOnClickListener", "on clicklistener")
-            setTextState(!binding.checkBoxState.isChecked)
-            binding.checkBoxState.isChecked = !binding.checkBoxState.isChecked
-            model.state = binding.checkBoxState.isChecked
+        binding.checkBoxState.setOnClickListener {
+            setTextState(binding.checkBoxState.isChecked)
+            model.completed = binding.checkBoxState.isChecked
             todoItemUpdater.updateTodoItem(model)
+        }
+
+        if (model.isDeadline) {
+            binding.textViewDeadline.visibility = View.VISIBLE
+            binding.textViewDeadline.text =
+                SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(model.deadline)
+        } else {
+            binding.textViewDeadline.visibility = View.GONE
         }
     }
 
     private fun setTextState(isChecked: Boolean) {
-
         if (!isChecked)
             binding.textViewText.animateRemoveStrikeThrough()
         else

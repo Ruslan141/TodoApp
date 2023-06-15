@@ -1,6 +1,5 @@
 package ru.versoit.todoapp.data.storage.datasources.mock
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -11,80 +10,21 @@ import java.util.Date
 
 object MockTodoItemDataSource : TodoItemDataSource {
 
-    private var todoItems: List<TodoItemEntity> = mutableListOf(
-        TodoItemEntity(
-            "0",
-            "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.",
-            Importance.IMPORTANT,
-            Date(),
-            false,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "1",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "2",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "3",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "4",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "5",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "6",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        ),
-        TodoItemEntity(
-            "7",
-            "Написать что-то",
-            Importance.LESS_IMPORTANT,
-            Date(),
-            true,
-            Date(),
-            Date()
-        )
-    )
+    private var todoItems: List<TodoItemEntity> = createMockData()
+
+    private fun createMockData(): List<TodoItemEntity> {
+        val list = mutableListOf<TodoItemEntity>()
+
+        for (idxNum in 0 until 20) {
+            list.add(TodoItemEntity("$idxNum", "$idxNum", Importance.values()[(Math.random() * 10 % 3).toInt()], Date(), false,
+                isDeadline = false,
+                dateCreate = Date(),
+                dateChange = Date()
+            ))
+        }
+
+        return list
+    }
 
     private val todoItemsFlow: MutableStateFlow<List<TodoItemEntity>> =
         MutableStateFlow(todoItems)
@@ -94,7 +34,9 @@ object MockTodoItemDataSource : TodoItemDataSource {
     }
 
     override fun addTodoItem(todoItem: TodoItemEntity) {
-        todoItem.id = "${todoItems.size + 1}"
+        if (todoItem.id.trim().isEmpty())
+            todoItem.id = "${todoItems.size}"
+
         val updatedList = todoItems.toMutableList()
         updatedList.add(todoItem)
         todoItems = updatedList.toList()
@@ -102,7 +44,6 @@ object MockTodoItemDataSource : TodoItemDataSource {
     }
 
     override fun updateTodoItem(todoItem: TodoItemEntity) {
-        Log.e("Update todoItem", "update todo")
         val index = todoItems.indexOfFirst { it.id == todoItem.id }
         val newList = todoItems.toMutableList()
         newList[index] = todoItem

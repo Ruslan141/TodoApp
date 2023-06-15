@@ -12,6 +12,7 @@
         <item name="switch_thumb_color_unchecked">@color/unchecked_switch_thumb_night</item>
         <item name="switch_track_color_unchecked">@color/switch_track_color_unchecked_night</item>
         <item name="todo_item_date_text_color">@color/todo_item_date_text_color_night</item>
+        <item name="nav_bar_background">@color/night_background</item>
     </style>
 
     <style name="TextViewHeader" parent="Widget.MaterialComponents.TextView">

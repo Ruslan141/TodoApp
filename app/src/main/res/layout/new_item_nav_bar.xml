@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="10dp"
+    android:paddingBottom="16dp"
+    android:background="?attr/nav_bar_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imageView_cancel_in_naw_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:padding="10dp"
+
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+
+        android:layout_marginVertical="32dp"
+
+        android:contentDescription="@string/cancel"
+
+        android:layout_marginHorizontal="16dp"
+
+        android:src="@drawable/ic_cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_save_in_nav_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginHorizontal="16dp"
+
+        android:padding="10dp"
+
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+
+        android:contentDescription="@string/cancel"
+
+        android:text="@string/add_task"
+        android:textAllCaps="true"
+
+        android:textColor="@color/primary"
+
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/imageView_cancel_in_naw_bar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
