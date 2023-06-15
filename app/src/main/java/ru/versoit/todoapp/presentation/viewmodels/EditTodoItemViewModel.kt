@@ -45,7 +45,7 @@ class EditTodoItemViewModel(
         }
 
     fun updateText(text: String) {
-        todoItemToEdit.text = text.lowercase().replaceFirstChar { it.uppercase() }
+        todoItemToEdit.text = text.trim().lowercase().replaceFirstChar { it.uppercase() }
         _todoItem.value = todoItemToEdit
     }
 
