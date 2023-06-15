@@ -57,10 +57,18 @@
     </style>
 
     <style name="ButtonWhite" parent="ShapeAppearanceOverlay.Material3.Button">
-        <item name="colorAccent">?attr/white_button_color</item>
-        <item name="colorPrimary">?attr/white_button_color</item>
-        <item name="colorSurface">?attr/white_button_color</item>
-        <item name="android:backgroundTint">?attr/white_button_color</item>
-        <item name="android:textColor">?attr/white_button_color</item>
+        <item name="colorPrimary">@color/primary</item>
     </style>
+
+    <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogDatePickerButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogDatePickerButton</item>
+        <item name="android:colorControlActivated">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
+    </style>
+
+    <style name="DialogDatePickerButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
 </resources>

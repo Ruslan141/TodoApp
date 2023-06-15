@@ -59,4 +59,19 @@
         <item name="android:backgroundTint">?attr/white_button_color</item>
         <item name="android:textColor">?attr/white_button_color</item>
     </style>
+
+    <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogDatePickerButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogDatePickerButton</item>
+        <item name="android:colorControlActivated">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:windowBackground">@color/tasks_list_background_dark</item>
+        <item name="android:textColorSecondary">@color/todo_item_date_text_color_night</item>
+    </style>
+
+    <style name="DialogDatePickerButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
 </resources>

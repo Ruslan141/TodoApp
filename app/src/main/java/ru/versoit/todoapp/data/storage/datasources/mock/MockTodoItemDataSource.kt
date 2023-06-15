@@ -12,9 +12,12 @@ object MockTodoItemDataSource : TodoItemDataSource {
 
     private var todoItems: List<TodoItemEntity> = createMockData()
 
+    var idCounter = 14
+
     private fun createMockData(): List<TodoItemEntity> {
 
         return mutableListOf(
+
             TodoItemEntity(
                 "1",
                 "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
@@ -114,37 +117,7 @@ object MockTodoItemDataSource : TodoItemDataSource {
                 false,
                 Date(),
                 Date()
-            ),
-            TodoItemEntity(
-                "11",
-                "Lorem ipsum dolor sit amet",
-                Importance.IMPORTANT,
-                Date(),
-                false,
-                false,
-                Date(),
-                Date()
-            ),
-            TodoItemEntity(
-                "12",
-                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
-                Importance.UNIMPORTANT,
-                Date(),
-                false,
-                false,
-                Date(),
-                Date()
-            ),
-            TodoItemEntity(
-                "13",
-                "Lorem ipsum dolor sit amet",
-                Importance.UNIMPORTANT,
-                Date(),
-                false,
-                true,
-                Date(),
-                Date()
-            ),
+            )
         )
     }
 
@@ -157,7 +130,7 @@ object MockTodoItemDataSource : TodoItemDataSource {
 
     override fun addTodoItem(todoItem: TodoItemEntity) {
         if (todoItem.id.trim().isEmpty())
-            todoItem.id = "${todoItems.size}"
+            todoItem.id = "${idCounter++}"
 
         val updatedList = todoItems.toMutableList()
         updatedList.add(todoItem)

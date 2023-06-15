@@ -40,7 +40,7 @@ class EditTodoItemViewModel(
     val lastChangedFormatted: LiveData<String>
         get() = todoItem.map {
             SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(
-                todoItemToEdit.deadline
+                todoItemToEdit.lastChanged
             )
         }
 

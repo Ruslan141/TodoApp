@@ -13,17 +13,17 @@
         <action
             android:id="@+id/action_tasksFragment_to_newTask"
             app:destination="@id/newTask"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:enterAnim="@anim/scale"
+            app:exitAnim="@anim/scale_out"
+            app:popEnterAnim="@anim/scale_pop"
+            app:popExitAnim="@anim/scale_out_pop"/>
         <action
             android:id="@+id/action_tasksFragment_to_editTodoItemFragment"
             app:destination="@id/editTodoItemFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right">
+            app:enterAnim="@anim/scale"
+            app:exitAnim="@anim/scale_out"
+            app:popEnterAnim="@anim/scale_pop"
+            app:popExitAnim="@anim/scale_out_pop">
         </action>
     </fragment>
     <fragment

@@ -2,7 +2,6 @@ package ru.versoit.todoapp.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,17 +28,32 @@ class TodoItemsAdapter(
 
             Importance.UNIMPORTANT -> {
                 val itemView = inflater.inflate(R.layout.task_unimportant, parent, false)
-                UnimportantTodoItemViewHolder(itemView, todoItemUpdater)
+                UnimportantTodoItemViewHolder(
+                    itemView,
+                    todoItemUpdater,
+                    todoItemRemover,
+                    todoItemEditor
+                )
             }
 
             Importance.LESS_IMPORTANT -> {
                 val itemView = inflater.inflate(R.layout.task_less_important, parent, false)
-                LessImportantTodoItemViewHolder(itemView, todoItemUpdater)
+                LessImportantTodoItemViewHolder(
+                    itemView,
+                    todoItemUpdater,
+                    todoItemRemover,
+                    todoItemEditor
+                )
             }
 
             Importance.IMPORTANT -> {
                 val itemView = inflater.inflate(R.layout.task_important, parent, false)
-                ImportantTodoItemViewHolder(itemView, todoItemUpdater)
+                ImportantTodoItemViewHolder(
+                    itemView,
+                    todoItemUpdater,
+                    todoItemEditor,
+                    todoItemRemover
+                )
             }
         }
     }
@@ -49,36 +63,6 @@ class TodoItemsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-        holder.itemView.setOnLongClickListener { it ->
-            val popupMenu = PopupMenu(it.context, it)
-            popupMenu.inflate(R.menu.menu_opens)
-            popupMenu.show()
-
-            popupMenu.setOnMenuItemClickListener {
-
-                when (it.itemId) {
-                    R.id.remove -> {
-                        todoItemRemover.removeTodoItem(position)
-                        true
-                    }
-
-                    R.id.edit -> {
-                        todoItemEditor.edit(getItem(position))
-                        true
-                    }
-
-                    else -> true
-                }
-            }
-
-            false
-        }
-
-        holder.itemView.setOnClickListener {
-            todoItemEditor.edit(getItem(position))
-        }
-
         if (holder is ViewHolder)
             holder.bind(getItem(position))
     }

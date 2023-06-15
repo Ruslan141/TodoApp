@@ -80,7 +80,7 @@ class NewTodoItemFragment : Fragment() {
 
         binding.textViewDeadline.setOnClickListener {
 
-            val datePicker = DatePickerDialog(this.requireContext())
+            val datePicker = DatePickerDialog(this.requireContext(), R.style.DatePicker)
             datePicker.updateDate(viewModel.year, viewModel.month, viewModel.day)
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                 viewModel.updateDate(dayOfMonth, month, year)

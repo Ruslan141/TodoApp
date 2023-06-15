@@ -1,26 +1,36 @@
 package ru.versoit.todoapp.presentation.viewholders
 
 import android.view.View
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import ru.versoit.todoapp.R
 import ru.versoit.todoapp.databinding.TaskImportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.fragments.TodoItemEditor
+import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ImportantTodoItemViewHolder(
     private val binding: TaskImportantBinding,
-    private val todoItemUpdater: TodoItemUpdater
+    private val todoItemUpdater: TodoItemUpdater,
+    private val todoItemEditor: TodoItemEditor,
+    private val todoItemRemover: TodoItemRemover,
 ) :
     RecyclerView.ViewHolder(binding.root), TodoItemsAdapter.ViewHolder {
 
     constructor(
         view: View,
-        todoItemUpdater: TodoItemUpdater
+        todoItemUpdater: TodoItemUpdater,
+        todoItemEditor: TodoItemEditor,
+        todoItemRemover: TodoItemRemover
     ) : this(
         TaskImportantBinding.bind(view),
-        todoItemUpdater
+        todoItemUpdater,
+        todoItemEditor,
+        todoItemRemover
     ) {
         binding.textViewText.isAlphaAnimate = true
     }
@@ -42,6 +52,35 @@ class ImportantTodoItemViewHolder(
                 SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(model.deadline)
         } else {
             binding.textViewDeadline.visibility = View.GONE
+        }
+
+        itemView.setOnLongClickListener { it ->
+            val popupMenu = PopupMenu(it.context, it)
+            popupMenu.inflate(R.menu.menu_opens)
+            popupMenu.show()
+
+            popupMenu.setOnMenuItemClickListener {
+
+                when (it.itemId) {
+                    R.id.remove -> {
+                        todoItemRemover.removeTodoItem(absoluteAdapterPosition)
+                        true
+                    }
+
+                    R.id.edit -> {
+                        todoItemEditor.edit(model)
+                        true
+                    }
+
+                    else -> true
+                }
+            }
+
+            false
+        }
+
+        itemView.setOnClickListener {
+            todoItemEditor.edit(model)
         }
     }
 
