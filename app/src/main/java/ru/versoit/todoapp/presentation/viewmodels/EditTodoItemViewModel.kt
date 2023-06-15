@@ -28,8 +28,8 @@ class EditTodoItemViewModel(
     val isDeadline
         get() = todoItemToEdit.isDeadline
 
-    val text: LiveData<String>
-        get() = todoItem.map { it.text }
+    val text: String
+        get() = todoItemToEdit.text
 
     val deadline: LiveData<Date>
         get() = todoItem.map { it.deadline }

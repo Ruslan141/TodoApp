@@ -13,17 +13,139 @@ object MockTodoItemDataSource : TodoItemDataSource {
     private var todoItems: List<TodoItemEntity> = createMockData()
 
     private fun createMockData(): List<TodoItemEntity> {
-        val list = mutableListOf<TodoItemEntity>()
 
-        for (idxNum in 0 until 20) {
-            list.add(TodoItemEntity("$idxNum", "$idxNum", Importance.values()[(Math.random() * 10 % 3).toInt()], Date(), false,
-                isDeadline = false,
-                dateCreate = Date(),
-                dateChange = Date()
-            ))
-        }
-
-        return list
+        return mutableListOf(
+            TodoItemEntity(
+                "1",
+                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
+                Importance.UNIMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "2",
+                "Lorem ipsum dolor sit amet",
+                Importance.LESS_IMPORTANT,
+                Date(),
+                false,
+                true,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "3",
+                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet.",
+                Importance.LESS_IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "4",
+                "Lorem ipsum dolor sit amet",
+                Importance.IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "5",
+                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
+                Importance.IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "6",
+                "Lorem ipsum dolor sit amet",
+                Importance.LESS_IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "7",
+                "Lorem ipsum dolor sit amet",
+                Importance.IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "8",
+                "Lorem ipsum dolor sit amet",
+                Importance.UNIMPORTANT,
+                Date(),
+                false,
+                true,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "9",
+                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
+                Importance.LESS_IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "10",
+                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
+                Importance.UNIMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "11",
+                "Lorem ipsum dolor sit amet",
+                Importance.IMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "12",
+                "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet",
+                Importance.UNIMPORTANT,
+                Date(),
+                false,
+                false,
+                Date(),
+                Date()
+            ),
+            TodoItemEntity(
+                "13",
+                "Lorem ipsum dolor sit amet",
+                Importance.UNIMPORTANT,
+                Date(),
+                false,
+                true,
+                Date(),
+                Date()
+            ),
+        )
     }
 
     private val todoItemsFlow: MutableStateFlow<List<TodoItemEntity>> =

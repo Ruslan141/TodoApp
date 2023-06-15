@@ -23,4 +23,5 @@
     <string name="removed_todo_item">Task removed</string>
     <string name="task_completed">Completed</string>
     <string name="last_edit">Last modified</string>
+    <string name="edit">Edit</string>
 </resources>

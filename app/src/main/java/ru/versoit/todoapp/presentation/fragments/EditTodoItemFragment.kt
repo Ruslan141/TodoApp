@@ -143,9 +143,7 @@ class EditTodoItemFragment : Fragment() {
             }
         }
 
-        viewModel.text.observe(viewLifecycleOwner) {
-            binding.editTextTask.setText(it)
-        }
+        binding.editTextTask.setText(viewModel.text)
 
         binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             if (scrollY > binding.imageViewCancel.top) {
