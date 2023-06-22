@@ -5,98 +5,87 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/color_background_window"
+    android:fitsSystemWindows="true"
     tools:context=".presentation.fragments.TodoItemsFragment">
 
-    <include layout="@layout/todo_items_nav_bar"
-        android:id="@+id/nav_bar"
-        android:visibility="gone"
-
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|top"/>
+        android:fitsSystemWindows="true">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="165dp"
+            android:background="?attr/color_background_window"
+            android:fitsSystemWindows="true"
+            app:collapsedTitleTextAppearance="@style/CollapsedAppBarTitle"
+            app:expandedTitleMarginBottom="52dp"
+            app:expandedTitleMarginStart="62dp"
+            app:expandedTitleTextAppearance="@style/TextViewHeader"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="@string/my_tasks"
+            app:titleCollapseMode="scale"
+            app:toolbarId="@id/toolbar">
 
-            <ImageView
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView_hide"
-                android:layout_width="55dp"
-
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="26dp"
+                android:layout_marginBottom="6dp"
+                android:background="?selectableItemBackgroundBorderless"
                 android:clickable="true"
-
+                android:focusable="true"
                 android:padding="10dp"
-
-                android:layout_height="45dp"
-
-                android:layout_marginEnd="20dp"
-
-                android:contentDescription="@string/show_or_hide"
                 android:src="@drawable/ic_show"
+                app:iconTint="@color/primary" />
 
-                app:layout_constraintBottom_toBottomOf="@+id/linearLayout_header"
-                app:layout_constraintEnd_toEndOf="@id/linearLayout_tasks" />
-
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/linearLayout_header"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textView_completed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="62dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/completed"
+                app:layout_collapseMode="parallax" />
 
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/textView_tasks"
-                    style="@style/TextViewHeader"
+    </com.google.android.material.appbar.AppBarLayout>
 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="10dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-                    android:layout_marginTop="82dp"
-                    android:text="@string/my_tasks" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/textView_completed"
-                    style="@style/Widget.textViewSubhead"
-                    android:layout_width="wrap_content"
-
-                    android:layout_height="wrap_content"
-                    android:text="@string/completed" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/linearLayout_tasks"
                 style="@style/TasksBackground"
                 android:layout_width="match_parent"
-
-                android:layout_height="wrap_content"
-
-                android:layout_marginHorizontal="8dp"
-
-                android:layout_marginTop="28dp"
-                android:orientation="vertical"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_header">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView_tasks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    tools:itemCount="0"
+                    tools:itemCount="3"
 
                     tools:listitem="@layout/task_unimportant" />
 
@@ -105,20 +94,20 @@
                     style="@style/Widget.textViewSubhead"
                     android:layout_width="wrap_content"
 
-                    android:background="?attr/selectableItemBackground"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp"
-
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
-
                     android:layout_marginStart="50dp"
+
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingHorizontal="10dp"
+
+                    android:paddingVertical="4dp"
 
                     android:text="@string/new_task" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
     </androidx.core.widget.NestedScrollView>
 

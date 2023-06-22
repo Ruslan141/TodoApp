@@ -77,14 +77,6 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
         createItemsList()
 
         bindTryHidingItemsTo(binding.imageViewHide)
-        bindTryHidingItemsTo(binding.navBar.imageViewHideInNavBar)
-
-        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > binding.textViewTasks.top) {
-                binding.navBar.root.visibility = View.VISIBLE
-            } else
-                binding.navBar.root.visibility = View.GONE
-        }
     }
 
     private fun createItemsList() {
@@ -141,6 +133,7 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                             .setAction(R.string.undo) {
                                 viewModel.undoCompletedTodoItem()
                             }.show()
+
                     }
                 }
             }
@@ -194,20 +187,8 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                         requireContext(), R.drawable.ic_show
                     )
                 )
-
-                binding.navBar.imageViewHideInNavBar.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(), R.drawable.ic_show
-                    )
-                )
             } else {
                 binding.imageViewHide.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(), R.drawable.ic_hide
-                    )
-                )
-
-                binding.navBar.imageViewHideInNavBar.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(), R.drawable.ic_hide
                     )

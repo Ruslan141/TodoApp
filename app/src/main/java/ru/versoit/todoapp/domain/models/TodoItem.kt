@@ -9,7 +9,6 @@ enum class Importance {
     IMPORTANT
 }
 
-
 data class TodoItem(
     val id: String,
     var text: String,

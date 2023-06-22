@@ -77,8 +77,7 @@ class TodoItemsViewModel(
     fun setCompletedTodoItem(position: Int) {
         val todoItem = todoItems[position]
         todoItem.completed = true
-        lastCompleted = todoItem
-        todoItemRemoveUseCase.removeTodoItem(todoItem.id)
+        todoItemUpdateUseCase.updateTodoItem(todoItem)
     }
 
     fun undoDeletedTodoItem() = addTodoItemUseCase.addTodoItem(lastDeleted)
