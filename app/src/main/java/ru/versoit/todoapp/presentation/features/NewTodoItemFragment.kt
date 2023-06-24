@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.fragments
+package ru.versoit.todoapp.presentation.features
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -10,41 +10,24 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
 import ru.versoit.todoapp.data.storage.datasources.mock.MockTodoItemDataSource
-import ru.versoit.todoapp.databinding.FragmentEditTodoItemBinding
+import ru.versoit.todoapp.databinding.FragmentNewTodoItemBinding
 import ru.versoit.todoapp.domain.models.Importance
-import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
-import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
-import ru.versoit.todoapp.presentation.viewmodels.EditTodoItemViewModel
-import ru.versoit.todoapp.presentation.vmfactory.EditTodoItemViewModelFactory
+import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
+import ru.versoit.todoapp.presentation.viewmodels.NewTodoItemViewModel
 
 
-class EditTodoItemFragment : Fragment() {
+class NewTodoItemFragment : Fragment() {
 
-    private var _binding: FragmentEditTodoItemBinding? = null
+    private var _binding: FragmentNewTodoItemBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<EditTodoItemViewModel> {
-
-        EditTodoItemViewModelFactory(
-            TodoItemUpdateUseCase(
-                TodoItemRepositoryImpl(
-                    MockTodoItemDataSource
-                )
-            ),
-            TodoItemRemoveUseCase(
-                TodoItemRepositoryImpl(
-                    MockTodoItemDataSource
-                )
-            )
-        )
+    private val viewModel by viewModels<NewTodoItemViewModel> {
+        NewTodoItemViewModelFactory(AddTodoItemUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)))
     }
-
-    private val args: EditTodoItemFragmentArgs by navArgs()
 
     companion object {
 
@@ -57,7 +40,7 @@ class EditTodoItemFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentEditTodoItemBinding.inflate(inflater, container, false)
+        _binding = FragmentNewTodoItemBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -67,9 +50,6 @@ class EditTodoItemFragment : Fragment() {
     }
 
     private fun init() {
-
-        val todoItem = args.todoItem
-        viewModel.setItemToEdit(todoItem)
 
         viewModel.deadline.observe(viewLifecycleOwner) {
 
@@ -84,7 +64,7 @@ class EditTodoItemFragment : Fragment() {
                 )
             )
 
-            binding.textViewDeadline.text = viewModel.formattedDeadline
+            binding.textViewDeadline.text = viewModel.formattedDate
         }
 
         inflateImportanceSelectionMenu(binding.textViewImportance)
@@ -102,17 +82,17 @@ class EditTodoItemFragment : Fragment() {
             val datePicker = DatePickerDialog(this.requireContext(), R.style.DatePicker)
             datePicker.updateDate(viewModel.year, viewModel.month, viewModel.day)
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
-                viewModel.updateDeadline(dayOfMonth, month, year)
+                viewModel.updateDate(dayOfMonth, month, year)
             }
             datePicker.show()
         }
 
         binding.switchDeadline.setOnCheckedChangeListener { _, isChecked ->
 
-            viewModel.updateIsDeadline(isChecked)
+            viewModel.isDeadline = isChecked
 
             if (isChecked) {
-                binding.textViewDeadline.text = viewModel.formattedDeadline
+                binding.textViewDeadline.text = viewModel.formattedDate
                 binding.textViewDeadline.visibility = View.VISIBLE
                 binding.textViewMakeUp.alpha = ACTIVE
                 return@setOnCheckedChangeListener
@@ -120,13 +100,6 @@ class EditTodoItemFragment : Fragment() {
             binding.textViewDeadline.visibility = View.GONE
             binding.textViewMakeUp.alpha = INACTIVE
 
-        }
-
-        binding.switchDeadline.isChecked = viewModel.isDeadline
-
-        viewModel.lastChangedFormatted.observe(viewLifecycleOwner) {
-            val textFormatted = "${getString(R.string.last_edit)} - $it"
-            binding.textViewLastChange.text = textFormatted
         }
 
         viewModel.importance.observe(viewLifecycleOwner) {
@@ -143,31 +116,11 @@ class EditTodoItemFragment : Fragment() {
             }
         }
 
-        binding.editTextTask.setText(viewModel.text)
-
-        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > binding.imageViewCancel.top) {
-                binding.navBar.root.visibility = View.VISIBLE
-            } else {
-                binding.navBar.root.visibility = View.GONE
-            }
-        }
-
         binding.imageViewCancel.setOnClickListener {
             findNavController().navigateUp()
         }
 
-        binding.navBar.imageViewCancelInNawBar.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.textViewRemove.setOnClickListener {
-            viewModel.removeTodoItem()
-            findNavController().navigateUp()
-        }
-
-        bindUpdateEventTo(binding.textViewSave)
-        bindUpdateEventTo(binding.navBar.textViewSaveInNavBar)
+        bindSaveEventTo(binding.textViewSave)
     }
 
     private fun inflateImportanceSelectionMenu(view: View) {
@@ -198,11 +151,11 @@ class EditTodoItemFragment : Fragment() {
         }
     }
 
-    private fun bindUpdateEventTo(view: View) {
+    private fun bindSaveEventTo(view: View) {
 
         view.setOnClickListener {
 
-            viewModel.updateText(binding.editTextTask.text.toString())
+            viewModel.text = binding.editTextTask.text.toString()
 
             if (viewModel.isInvalidDeadline) {
                 Snackbar.make(binding.root, R.string.invalid_date, Snackbar.LENGTH_LONG).show()
@@ -214,7 +167,7 @@ class EditTodoItemFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            viewModel.update()
+            viewModel.save()
             findNavController().navigateUp()
         }
     }

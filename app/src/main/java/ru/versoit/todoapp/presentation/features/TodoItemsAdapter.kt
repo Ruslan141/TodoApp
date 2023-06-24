@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.adapters
+package ru.versoit.todoapp.presentation.features
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.models.TodoItem
-import ru.versoit.todoapp.presentation.fragments.TodoItemEditor
 import ru.versoit.todoapp.presentation.viewholders.ImportantTodoItemViewHolder
 import ru.versoit.todoapp.presentation.viewholders.LessImportantTodoItemViewHolder
 import ru.versoit.todoapp.presentation.viewholders.UnimportantTodoItemViewHolder

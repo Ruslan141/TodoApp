@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.vmfactory
+package ru.versoit.todoapp.presentation.features
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

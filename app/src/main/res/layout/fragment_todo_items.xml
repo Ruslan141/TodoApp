@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/color_background_window"
     android:fitsSystemWindows="true"
-    tools:context=".presentation.fragments.TodoItemsFragment">
+    tools:context=".presentation.features.TodoItemsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:layout_gravity="end|bottom"
                 android:layout_marginEnd="26dp"
                 android:layout_marginBottom="6dp"
-                android:background="?selectableItemBackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="10dp"
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    tools:itemCount="3"
+                    tools:itemCount="0"
 
                     tools:listitem="@layout/task_unimportant" />
 

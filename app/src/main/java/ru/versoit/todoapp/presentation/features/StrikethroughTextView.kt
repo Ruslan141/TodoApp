@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.views
+package ru.versoit.todoapp.presentation.features
 
 import android.animation.ValueAnimator
 import android.content.Context

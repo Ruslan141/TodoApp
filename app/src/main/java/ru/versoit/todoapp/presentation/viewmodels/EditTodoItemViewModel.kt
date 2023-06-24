@@ -20,32 +20,36 @@ class EditTodoItemViewModel(
     private val todoItemRemoveUseCase: TodoItemRemoveUseCase
 ) : ViewModel() {
 
-    private var _todoItem = MutableLiveData<TodoItem>()
-    val todoItem: LiveData<TodoItem> = _todoItem
+    private var _todoItem = MutableLiveData<TodoItem?>()
+    val todoItem: LiveData<TodoItem?> = _todoItem
 
-    private lateinit var todoItemToEdit: TodoItem
+    private var todoItemToEdit: TodoItem? = null
 
     val isDeadline
-        get() = todoItemToEdit.isDeadline
+        get() = todoItemToEdit?.isDeadline
 
     val text: String
-        get() = todoItemToEdit.text
+        get() = todoItemToEdit?.text ?: ""
 
     val deadline: LiveData<Date>
-        get() = todoItem.map { it.deadline }
+        get() = todoItem.map {
+            it?.deadline ?: Date()
+        }
 
     val importance: LiveData<Importance>
-        get() = todoItem.map { it.importance }
+        get() = todoItem.map { it?.importance ?: Importance.IMPORTANT }
 
     val lastChangedFormatted: LiveData<String>
         get() = todoItem.map {
             SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(
-                todoItemToEdit.lastChanged
+                todoItemToEdit?.lastChanged ?: Date()
             )
         }
 
     fun updateText(text: String) {
-        todoItemToEdit.text = text.trim().lowercase().replaceFirstChar { it.uppercase() }
+        val newTodoItem =
+            todoItemToEdit?.copy(text = text.trim().lowercase().replaceFirstChar { it.uppercase() })
+        todoItemToEdit = newTodoItem
         _todoItem.value = todoItemToEdit
     }
 
@@ -55,12 +59,12 @@ class EditTodoItemViewModel(
     }
 
     fun updateImportance(importance: Importance) {
-        todoItemToEdit.importance = importance
+        todoItemToEdit = todoItemToEdit?.copy(importance = importance)
         _todoItem.value = todoItemToEdit
     }
 
     fun updateIsDeadline(isDeadline: Boolean) {
-        todoItemToEdit.isDeadline = isDeadline
+        todoItemToEdit = todoItemToEdit?.copy(isDeadline = isDeadline)
         _todoItem.value = todoItemToEdit
     }
 
@@ -71,50 +75,54 @@ class EditTodoItemViewModel(
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.YEAR, year)
 
-        todoItemToEdit.deadline = calendar.time
+        todoItemToEdit = todoItemToEdit?.copy(deadline = calendar.time)
         _todoItem.value = todoItemToEdit
     }
 
     val formattedDeadline: String
         get() = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(
-            todoItemToEdit.deadline
+            todoItemToEdit?.deadline ?: Date()
         )
 
     val isInvalidDeadline: Boolean
         get() {
             val currentDate = getDateNow()
-            return currentDate > todoItemToEdit.deadline
+            return currentDate > todoItemToEdit?.deadline
         }
 
-    val isInvalidText: Boolean get() = todoItemToEdit.text.isEmpty()
+    val isInvalidText: Boolean get() = todoItemToEdit?.text?.isEmpty() ?: false
 
     fun removeTodoItem() {
-        todoItemRemoveUseCase.removeTodoItem(todoItemToEdit.id)
+        todoItemToEdit?.let {
+            todoItemRemoveUseCase.removeTodoItem(todoItemToEdit!!.id)
+        }
     }
 
     fun update() {
-        todoItemToEdit.lastChanged = Date()
-        updateTodoItemUseCase.updateTodoItem(todoItemToEdit)
+        todoItemToEdit = todoItemToEdit?.copy(lastChanged = Date())
+        todoItemToEdit?.let {
+            updateTodoItemUseCase.updateTodoItem(todoItemToEdit!!)
+        }
     }
 
     val year: Int
         get() {
             val calendar = Calendar.getInstance()
-            calendar.time = todoItemToEdit.deadline
+            calendar.time = todoItemToEdit?.deadline ?: calendar.time
             return calendar.get(Calendar.YEAR)
         }
 
     val month: Int
         get() {
             val calendar = Calendar.getInstance()
-            calendar.time = todoItemToEdit.deadline
+            calendar.time = todoItemToEdit?.deadline ?: calendar.time
             return calendar.get(Calendar.MONTH)
         }
 
     val day: Int
         get() {
             val calendar = Calendar.getInstance()
-            calendar.time = todoItemToEdit.deadline
+            calendar.time = todoItemToEdit?.deadline ?: calendar.time
             return calendar.get(Calendar.DAY_OF_MONTH)
         }
 

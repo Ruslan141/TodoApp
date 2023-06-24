@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.databinding.TaskLessImportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
-import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
-import ru.versoit.todoapp.presentation.fragments.TodoItemEditor
+import ru.versoit.todoapp.presentation.features.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.features.TodoItemEditor
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 import java.text.SimpleDateFormat
@@ -42,8 +42,7 @@ class LessImportantTodoItemViewHolder(
 
         binding.checkBoxState.setOnClickListener {
             setTextState(binding.checkBoxState.isChecked)
-            model.completed = binding.checkBoxState.isChecked
-            todoItemUpdater.updateTodoItem(model)
+            todoItemUpdater.updateTodoItem(model.copy(completed = binding.checkBoxState.isChecked))
         }
 
         if (model.isDeadline) {

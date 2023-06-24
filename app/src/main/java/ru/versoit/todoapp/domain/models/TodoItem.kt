@@ -11,11 +11,11 @@ enum class Importance {
 
 data class TodoItem(
     val id: String,
-    var text: String,
-    var importance: Importance,
-    var deadline: Date,
-    var completed: Boolean,
-    var isDeadline: Boolean,
-    var dateCreate: Date,
-    var lastChanged: Date
+    val text: String,
+    val importance: Importance,
+    val deadline: Date,
+    val completed: Boolean,
+    val isDeadline: Boolean,
+    val dateCreate: Date,
+    val lastChanged: Date
 ) : Serializable

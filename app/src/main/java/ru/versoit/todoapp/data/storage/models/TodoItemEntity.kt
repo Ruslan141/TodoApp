@@ -6,13 +6,13 @@ import java.util.Date
 
 data class TodoItemEntity(
     var id: String,
-    var text: String,
-    var importance: Importance,
-    var deadline: Date,
-    var state: Boolean,
-    var isDeadline: Boolean,
-    var dateCreate: Date,
-    var dateChange: Date
+    val text: String,
+    val importance: Importance,
+    val deadline: Date,
+    val state: Boolean,
+    val isDeadline: Boolean,
+    val dateCreate: Date,
+    val dateChange: Date
 ) {
     fun toDomain(): TodoItem {
         return TodoItem(

@@ -8,6 +8,7 @@ import ru.versoit.todoapp.data.storage.models.TodoItemEntity
 import ru.versoit.todoapp.domain.models.Importance
 import java.util.Date
 
+@Deprecated("Hardcode")
 object MockTodoItemDataSource : TodoItemDataSource {
 
     private var todoItems: List<TodoItemEntity> = createMockData()

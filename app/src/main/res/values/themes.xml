@@ -35,7 +35,7 @@
     </style>
 
     <style name="TasksBackground">
-        <item name="android:background">@drawable/tasks_rect_background_light</item>
+        <item name="android:background">@color/tasks_list_background_light</item>
     </style>
 
     <style name="ImageViewTaskInfo">

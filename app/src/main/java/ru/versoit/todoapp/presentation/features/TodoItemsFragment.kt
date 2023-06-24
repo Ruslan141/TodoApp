@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.fragments
+package ru.versoit.todoapp.presentation.features
 
 import android.graphics.Canvas
 import android.os.Bundle
@@ -27,9 +27,7 @@ import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
 import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
-import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemsViewModel
-import ru.versoit.todoapp.presentation.vmfactory.TodoItemsViewModelFactory
 
 
 class TodoItemsFragment : Fragment(), TodoItemEditor {
@@ -125,15 +123,6 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                     ItemTouchHelper.RIGHT -> {
                         viewModel.setCompletedTodoItem(position)
                         performVibration()
-                        Snackbar.make(
-                            recyclerView,
-                            R.string.task_completed,
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setAction(R.string.undo) {
-                                viewModel.undoCompletedTodoItem()
-                            }.show()
-
                     }
                 }
             }
@@ -147,6 +136,19 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
+                val position = viewHolder.absoluteAdapterPosition
+                if (position >= 0 && dX > 0 && viewModel.isCompletedTodoItem(position)) {
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        0f,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+                    return
+                }
                 RecyclerViewSwipeDecorator.Builder(
                     c,
                     recyclerView,

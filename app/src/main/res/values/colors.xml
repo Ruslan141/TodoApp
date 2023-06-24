@@ -6,7 +6,7 @@
     <color name="checkbox_color_night">#20ffffff</color>
     <color name="checkbox_color_light">#20000000</color>
     <color name="tasks_list_background_light">#ffffff</color>
-    <color name="tasks_list_background_dark">#252528</color>
+    <color name="tasks_list_background_night">#252528</color>
     <color name="night_background">#000000</color>
     <color name="text_color_for_light">#000000</color>
     <color name="text_color_for_night">#ffffff</color>

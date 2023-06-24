@@ -23,13 +23,9 @@ class TodoItemsViewModel(
 
     private var todoItems = listOf<TodoItem>()
 
-    lateinit var lastDeleted: TodoItem
-        private set
+    private var lastDeleted: TodoItem? = null
 
-    lateinit var lastCompleted: TodoItem
-        private set
-
-    private val _isHidden = MutableLiveData<Boolean>(false)
+    private val _isHidden = MutableLiveData(false)
     val isHidden: LiveData<Boolean> = _isHidden
 
     private val isHiddenValue get() = _isHidden.value!!
@@ -47,11 +43,13 @@ class TodoItemsViewModel(
         viewModelScope.launch {
             getAllTodoItemsUseCase.getAllTodoItems().collect { it ->
                 todoItems = it
-                todoItems = todoItems.sortedBy { it.id }
+                todoItems = todoItems.sortedByDescending { it.lastChanged }
                 updateLiveData(todoItems)
             }
         }
     }
+
+    fun isCompletedTodoItem(position: Int) = todoItems[position].completed
 
     private fun updateLiveData(todoItems: List<TodoItem>) {
 
@@ -75,18 +73,16 @@ class TodoItemsViewModel(
     }
 
     fun setCompletedTodoItem(position: Int) {
-        val todoItem = todoItems[position]
-        todoItem.completed = true
+        var todoItem = todoItems[position]
+        todoItem = todoItem.copy(completed = true)
         todoItemUpdateUseCase.updateTodoItem(todoItem)
     }
 
-    fun undoDeletedTodoItem() = addTodoItemUseCase.addTodoItem(lastDeleted)
-
-    fun undoCompletedTodoItem() {
-        lastCompleted.completed = false
-        addTodoItemUseCase.addTodoItem(lastCompleted)
+    fun undoDeletedTodoItem() {
+        lastDeleted?.let {
+            addTodoItemUseCase.addTodoItem(it)
+        }
     }
-
 
     fun showCompletedTodoItems() {
         _isHidden.value = false
