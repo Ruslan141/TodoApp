@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/color_background_window"
-            tools:context=".presentation.features.EditTodoItemFragment">
+            tools:context=".presentation.fragments.EditTodoItemFragment">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textView_last_change"

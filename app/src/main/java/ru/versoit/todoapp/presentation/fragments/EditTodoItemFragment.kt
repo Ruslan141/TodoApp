@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.features
+package ru.versoit.todoapp.presentation.fragments
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -9,18 +9,22 @@ import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
-import ru.versoit.todoapp.data.storage.datasources.mock.MockTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
 import ru.versoit.todoapp.databinding.FragmentEditTodoItemBinding
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
+import ru.versoit.todoapp.presentation.features.vmfactory.EditTodoItemViewModelFactory
 import ru.versoit.todoapp.presentation.viewmodels.EditTodoItemViewModel
-
 
 class EditTodoItemFragment : Fragment() {
 
@@ -32,12 +36,16 @@ class EditTodoItemFragment : Fragment() {
         EditTodoItemViewModelFactory(
             TodoItemUpdateUseCase(
                 TodoItemRepositoryImpl(
-                    MockTodoItemDataSource
+                    RoomTodoItemDataSource(requireContext()),
+                    RetrofitTodoItemDataSource(),
+                    SharedPrefsRevisionDataSource(requireContext())
                 )
             ),
             TodoItemRemoveUseCase(
                 TodoItemRepositoryImpl(
-                    MockTodoItemDataSource
+                    RoomTodoItemDataSource(requireContext()),
+                    RetrofitTodoItemDataSource(),
+                    SharedPrefsRevisionDataSource(requireContext())
                 )
             )
         )
@@ -70,20 +78,23 @@ class EditTodoItemFragment : Fragment() {
         val todoItem = args.todoItem
         viewModel.setItemToEdit(todoItem)
 
-        viewModel.deadline.observe(viewLifecycleOwner) {
+        lifecycleScope.launch {
 
-            if (viewModel.isInvalidDeadline) binding.textViewDeadline.setTextColor(
-                ContextCompat.getColor(
-                    this.requireContext(), R.color.invalid
-                )
-            )
-            else binding.textViewDeadline.setTextColor(
-                ContextCompat.getColor(
-                    this.requireContext(), R.color.primary
-                )
-            )
+            viewModel.deadline.collect {
 
-            binding.textViewDeadline.text = viewModel.formattedDeadline
+                if (viewModel.isInvalidDeadline) binding.textViewDeadline.setTextColor(
+                    ContextCompat.getColor(
+                        this@EditTodoItemFragment.requireContext(), R.color.invalid
+                    )
+                )
+                else binding.textViewDeadline.setTextColor(
+                    ContextCompat.getColor(
+                        this@EditTodoItemFragment.requireContext(), R.color.primary
+                    )
+                )
+
+                binding.textViewDeadline.text = viewModel.formattedDeadline
+            }
         }
 
         inflateImportanceSelectionMenu(binding.textViewImportance)
@@ -108,7 +119,7 @@ class EditTodoItemFragment : Fragment() {
 
         binding.switchDeadline.setOnCheckedChangeListener { _, isChecked ->
 
-            viewModel.updateIsDeadline(isChecked)
+            viewModel.isDeadline = isChecked
 
             if (isChecked) {
                 binding.textViewDeadline.text = viewModel.formattedDeadline
@@ -121,24 +132,29 @@ class EditTodoItemFragment : Fragment() {
 
         }
 
-        binding.switchDeadline.isChecked = viewModel.isDeadline ?: false
+        binding.switchDeadline.isChecked = viewModel.isDeadline
 
-        viewModel.lastChangedFormatted.observe(viewLifecycleOwner) {
-            val textFormatted = "${getString(R.string.last_edit)} - $it"
-            binding.textViewLastChange.text = textFormatted
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.lastChangedFormatted.collect { lastChange ->
+                val textFormatted = "${getString(R.string.last_edit)} - $lastChange"
+                binding.textViewLastChange.text = textFormatted
+            }
         }
 
-        viewModel.importance.observe(viewLifecycleOwner) {
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            when (it!!) {
-                Importance.UNIMPORTANT -> binding.textViewSelectedImportance.text =
-                    getString(R.string.no)
+            viewModel.importance.collect { importance ->
 
-                Importance.LESS_IMPORTANT -> binding.textViewSelectedImportance.text =
-                    getString(R.string.less)
+                when (importance) {
+                    Importance.UNIMPORTANT -> binding.textViewSelectedImportance.text =
+                        getString(R.string.no)
 
-                Importance.IMPORTANT -> binding.textViewSelectedImportance.text =
-                    getString(R.string.important)
+                    Importance.LESS_IMPORTANT -> binding.textViewSelectedImportance.text =
+                        getString(R.string.less)
+
+                    Importance.IMPORTANT -> binding.textViewSelectedImportance.text =
+                        getString(R.string.important)
+                }
             }
         }
 

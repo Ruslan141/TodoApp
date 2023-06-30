@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/tasksFragment"
-        android:name="ru.versoit.todoapp.presentation.features.TodoItemsFragment"
+        android:name="ru.versoit.todoapp.presentation.fragments.TodoItemsFragment"
         android:label="fragment_tasks"
         tools:layout="@layout/fragment_todo_items" >
         <action
@@ -28,12 +28,12 @@
     </fragment>
     <fragment
         android:id="@+id/newTask"
-        android:name="ru.versoit.todoapp.presentation.features.NewTodoItemFragment"
+        android:name="ru.versoit.todoapp.presentation.fragments.NewTodoItemFragment"
         android:label="fragment_new_task"
         tools:layout="@layout/fragment_new_todo_item" />
     <fragment
         android:id="@+id/editTodoItemFragment"
-        android:name="ru.versoit.todoapp.presentation.features.EditTodoItemFragment"
+        android:name="ru.versoit.todoapp.presentation.fragments.EditTodoItemFragment"
         android:label="EditTodoItemFragment">
         <argument
             android:name="todoItem"

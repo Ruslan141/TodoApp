@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.features
+package ru.versoit.todoapp.presentation.fragments
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -9,14 +9,19 @@ import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
-import ru.versoit.todoapp.data.storage.datasources.mock.MockTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
 import ru.versoit.todoapp.databinding.FragmentNewTodoItemBinding
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
+import ru.versoit.todoapp.presentation.features.vmfactory.NewTodoItemViewModelFactory
 import ru.versoit.todoapp.presentation.viewmodels.NewTodoItemViewModel
 
 
@@ -26,7 +31,15 @@ class NewTodoItemFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<NewTodoItemViewModel> {
-        NewTodoItemViewModelFactory(AddTodoItemUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)))
+        NewTodoItemViewModelFactory(
+            AddTodoItemUseCase(
+                TodoItemRepositoryImpl(
+                    RoomTodoItemDataSource(
+                        requireContext()
+                    ), RetrofitTodoItemDataSource(), SharedPrefsRevisionDataSource(requireContext())
+                )
+            )
+        )
     }
 
     companion object {
@@ -51,20 +64,22 @@ class NewTodoItemFragment : Fragment() {
 
     private fun init() {
 
-        viewModel.deadline.observe(viewLifecycleOwner) {
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            if (viewModel.isInvalidDeadline) binding.textViewDeadline.setTextColor(
-                ContextCompat.getColor(
-                    this.requireContext(), R.color.invalid
+            viewModel.deadline.collect {
+                if (viewModel.isInvalidDeadline) binding.textViewDeadline.setTextColor(
+                    ContextCompat.getColor(
+                        this@NewTodoItemFragment.requireContext(), R.color.invalid
+                    )
                 )
-            )
-            else binding.textViewDeadline.setTextColor(
-                ContextCompat.getColor(
-                    this.requireContext(), R.color.primary
+                else binding.textViewDeadline.setTextColor(
+                    ContextCompat.getColor(
+                        this@NewTodoItemFragment.requireContext(), R.color.primary
+                    )
                 )
-            )
 
-            binding.textViewDeadline.text = viewModel.formattedDate
+                binding.textViewDeadline.text = viewModel.formattedDate
+            }
         }
 
         inflateImportanceSelectionMenu(binding.textViewImportance)
@@ -102,17 +117,19 @@ class NewTodoItemFragment : Fragment() {
 
         }
 
-        viewModel.importance.observe(viewLifecycleOwner) {
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            when (it!!) {
-                Importance.UNIMPORTANT -> binding.textViewSelectedImportance.text =
-                    getString(R.string.no)
+            viewModel.importance.collect { importance ->
+                when (importance) {
+                    Importance.UNIMPORTANT -> binding.textViewSelectedImportance.text =
+                        getString(R.string.no)
 
-                Importance.LESS_IMPORTANT -> binding.textViewSelectedImportance.text =
-                    getString(R.string.less)
+                    Importance.LESS_IMPORTANT -> binding.textViewSelectedImportance.text =
+                        getString(R.string.less)
 
-                Importance.IMPORTANT -> binding.textViewSelectedImportance.text =
-                    getString(R.string.important)
+                    Importance.IMPORTANT -> binding.textViewSelectedImportance.text =
+                        getString(R.string.important)
+                }
             }
         }
 

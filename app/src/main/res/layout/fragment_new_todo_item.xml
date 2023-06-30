@@ -91,7 +91,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".presentation.features.NewTodoItemFragment">
+            tools:context=".presentation.fragments.NewTodoItemFragment">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"

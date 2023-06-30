@@ -1,48 +1,48 @@
 package ru.versoit.todoapp.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
+import ru.versoit.todoapp.utils.DATE_FORMAT
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-const val DATE_FORMAT = "d MMM yyyy"
-
 class EditTodoItemViewModel(
     private val updateTodoItemUseCase: TodoItemUpdateUseCase,
-    private val todoItemRemoveUseCase: TodoItemRemoveUseCase
+    private val todoItemRemoveUseCase: TodoItemRemoveUseCase,
 ) : ViewModel() {
 
-    private var _todoItem = MutableLiveData<TodoItem?>()
-    val todoItem: LiveData<TodoItem?> = _todoItem
+    private var _todoItem = MutableStateFlow<TodoItem?>(null)
+    val todoItem: Flow<TodoItem?> = _todoItem
 
     private var todoItemToEdit: TodoItem? = null
 
-    val isDeadline
-        get() = todoItemToEdit?.isDeadline
+    var isDeadline = false
 
     val text: String
         get() = todoItemToEdit?.text ?: ""
 
-    val deadline: LiveData<Date>
+    val deadline: Flow<Date>
         get() = todoItem.map {
-            it?.deadline ?: Date()
+            it?.deadline!!
         }
 
-    val importance: LiveData<Importance>
+    val importance: Flow<Importance>
         get() = todoItem.map { it?.importance ?: Importance.IMPORTANT }
 
-    val lastChangedFormatted: LiveData<String>
+    val lastChangedFormatted: Flow<String>
         get() = todoItem.map {
             SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(
-                todoItemToEdit?.lastChanged ?: Date()
+                todoItemToEdit?.lastUpdate ?: Date()
             )
         }
 
@@ -54,17 +54,18 @@ class EditTodoItemViewModel(
     }
 
     fun setItemToEdit(todoItem: TodoItem) {
-        todoItemToEdit = todoItem
-        _todoItem.value = todoItem
+        isDeadline = todoItem.deadline != null
+
+        todoItemToEdit = if (todoItem.deadline == null)
+            todoItem.copy(deadline = Date())
+        else
+            todoItem
+
+        _todoItem.value = todoItemToEdit
     }
 
     fun updateImportance(importance: Importance) {
         todoItemToEdit = todoItemToEdit?.copy(importance = importance)
-        _todoItem.value = todoItemToEdit
-    }
-
-    fun updateIsDeadline(isDeadline: Boolean) {
-        todoItemToEdit = todoItemToEdit?.copy(isDeadline = isDeadline)
         _todoItem.value = todoItemToEdit
     }
 
@@ -87,21 +88,32 @@ class EditTodoItemViewModel(
     val isInvalidDeadline: Boolean
         get() {
             val currentDate = getDateNow()
+            if (todoItemToEdit?.deadline == null)
+                return false
+
             return currentDate > todoItemToEdit?.deadline
         }
 
     val isInvalidText: Boolean get() = todoItemToEdit?.text?.isEmpty() ?: false
 
     fun removeTodoItem() {
-        todoItemToEdit?.let {
-            todoItemRemoveUseCase.removeTodoItem(todoItemToEdit!!.id)
+
+        viewModelScope.launch {
+            todoItemToEdit?.let {
+                todoItemRemoveUseCase(todoItemToEdit!!.id)
+            }
         }
     }
 
     fun update() {
-        todoItemToEdit = todoItemToEdit?.copy(lastChanged = Date())
-        todoItemToEdit?.let {
-            updateTodoItemUseCase.updateTodoItem(todoItemToEdit!!)
+
+        viewModelScope.launch {
+            todoItemToEdit?.let {
+                if (isDeadline)
+                    updateTodoItemUseCase(it.copy(lastUpdate = Date()))
+                else
+                    updateTodoItemUseCase(it.copy(deadline = null, lastUpdate = Date()))
+            }
         }
     }
 

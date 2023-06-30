@@ -11,6 +11,7 @@ import ru.versoit.todoapp.presentation.features.TodoItemEditor
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class ImportantTodoItemViewHolder(
@@ -37,21 +38,23 @@ class ImportantTodoItemViewHolder(
 
     override fun bind(model: TodoItem) {
 
-        binding.textViewText.text = model.text
-        binding.checkBoxState.isChecked = model.completed
-        setTextState(model.completed)
+        with(binding) {
+            textViewText.text = model.text
+            checkBoxState.isChecked = model.done
+            setTextState(model.done)
 
-        binding.checkBoxState.setOnClickListener {
-            setTextState(binding.checkBoxState.isChecked)
-            todoItemUpdater.updateTodoItem(model.copy(completed = binding.checkBoxState.isChecked))
-        }
+            checkBoxState.setOnClickListener {
+                setTextState(checkBoxState.isChecked)
+                todoItemUpdater.updateTodoItem(model.copy(done = checkBoxState.isChecked, lastUpdate = Date()))
+            }
 
-        if (model.isDeadline) {
-            binding.textViewDeadline.visibility = View.VISIBLE
-            binding.textViewDeadline.text =
-                SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(model.deadline)
-        } else {
-            binding.textViewDeadline.visibility = View.GONE
+            if (model.deadline != null) {
+                textViewDeadline.visibility = View.VISIBLE
+                textViewDeadline.text =
+                    SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(model.deadline)
+            } else {
+                textViewDeadline.visibility = View.GONE
+            }
         }
 
         itemView.setOnLongClickListener { it ->
@@ -63,7 +66,7 @@ class ImportantTodoItemViewHolder(
 
                 when (it.itemId) {
                     R.id.remove -> {
-                        todoItemRemover.removeTodoItem(absoluteAdapterPosition)
+                        todoItemRemover.removeTodoItem(model)
                         true
                     }
 
@@ -85,9 +88,11 @@ class ImportantTodoItemViewHolder(
     }
 
     private fun setTextState(isChecked: Boolean) {
-        if (!isChecked)
-            binding.textViewText.animateRemoveStrikeThrough()
-        else
-            binding.textViewText.animateStrikeThrough()
+        with(binding) {
+            if (!isChecked)
+                textViewText.animateRemoveStrikeThrough()
+            else
+                textViewText.animateStrikeThrough()
+        }
     }
 }

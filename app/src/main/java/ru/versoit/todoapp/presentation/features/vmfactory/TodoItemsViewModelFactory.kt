@@ -1,7 +1,9 @@
-package ru.versoit.todoapp.presentation.features
+package ru.versoit.todoapp.presentation.features.vmfactory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
+import ru.versoit.todoapp.domain.repository.SyncCallback
 import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
 import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
@@ -12,7 +14,9 @@ class TodoItemsViewModelFactory(
     private val todoItemUpdateUseCase: TodoItemUpdateUseCase,
     private val todoItemRemoveUseCase: TodoItemRemoveUseCase,
     private val addTodoItemUseCase: AddTodoItemUseCase,
-    private val getAllTodoItemsUseCase: GetAllTodoItemsUseCase
+    private val getAllTodoItemsUseCase: GetAllTodoItemsUseCase,
+    private val networkSynchronizer: NetworkSynchronizer,
+    private val syncCallback: SyncCallback,
 ) :
     ViewModelProvider.Factory {
 
@@ -22,6 +26,8 @@ class TodoItemsViewModelFactory(
             todoItemUpdateUseCase,
             todoItemRemoveUseCase,
             addTodoItemUseCase,
-            getAllTodoItemsUseCase
+            getAllTodoItemsUseCase,
+            networkSynchronizer,
+            syncCallback
         ) as T
 }

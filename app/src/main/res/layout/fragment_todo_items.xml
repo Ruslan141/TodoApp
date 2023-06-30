@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/color_background_window"
     android:fitsSystemWindows="true"
-    tools:context=".presentation.features.TodoItemsFragment">
+    tools:context=".presentation.fragments.TodoItemsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -61,55 +61,62 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="10dp"
-        app:cardCornerRadius="10dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <androidx.cardview.widget.CardView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/linearLayout_tasks"
-                style="@style/TasksBackground"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView_tasks"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayout_tasks"
+                    style="@style/TasksBackground"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    tools:itemCount="0"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_tasks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
 
-                    tools:listitem="@layout/task_unimportant" />
+                        tools:itemCount="0"
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/textView_add_new_task"
-                    style="@style/Widget.textViewSubhead"
-                    android:layout_width="wrap_content"
+                        tools:listitem="@layout/task_unimportant" />
 
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="4dp"
-                    android:layout_marginStart="50dp"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/textView_add_new_task"
+                        style="@style/Widget.textViewSubhead"
+                        android:layout_width="wrap_content"
 
-                    android:background="?attr/selectableItemBackground"
-                    android:paddingHorizontal="10dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="4dp"
+                        android:layout_marginStart="50dp"
 
-                    android:paddingVertical="4dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingHorizontal="10dp"
 
-                    android:text="@string/new_task" />
+                        android:paddingVertical="4dp"
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                        android:text="@string/new_task" />
 
-        </androidx.cardview.widget.CardView>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </androidx.core.widget.NestedScrollView>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingButton_add_new_task"

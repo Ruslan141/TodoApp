@@ -24,4 +24,7 @@
     <string name="task_completed">Completed</string>
     <string name="last_edit">Last modified</string>
     <string name="edit">Edit</string>
+    <string name="data_synchronized">Data synchronized</string>
+    <string name="network_error">Network error</string>
+    <string name="retry">Retry</string>
 </resources>

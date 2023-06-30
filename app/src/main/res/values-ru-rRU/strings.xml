@@ -23,4 +23,7 @@
     <string name="task_completed">Выполнено</string>
     <string name="last_edit">Посл. редакт.</string>
     <string name="edit">Редактировать</string>
+    <string name="data_synchronized">Данные синхронизированы</string>
+    <string name="network_error">Ошибка сети</string>
+    <string name="retry">Повторить</string>
 </resources>

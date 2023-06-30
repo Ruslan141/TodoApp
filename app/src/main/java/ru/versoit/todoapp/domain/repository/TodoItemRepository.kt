@@ -5,13 +5,13 @@ import ru.versoit.todoapp.domain.models.TodoItem
 
 interface TodoItemRepository {
 
-    fun getAllTodoItems(): Flow<List<TodoItem>>
+    suspend fun getAllTodoItems(): Flow<List<TodoItem>>
 
-    fun addTodoItem(todoItem: TodoItem)
+    suspend fun addTodoItem(todoItem: TodoItem)
 
-    fun updateTodoItem(todoItem: TodoItem)
+    suspend fun updateTodoItem(todoItem: TodoItem)
 
-    fun removeTodoItem(id: String)
+    suspend fun removeTodoItem(id: String)
 
-    fun getTodoItemById(id: String): Flow<TodoItem?>
+    suspend fun getTodoItemById(id: String): Flow<TodoItem?>
 }
