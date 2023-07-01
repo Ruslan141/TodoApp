@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="#"><img src="https://github.com/Ruslan141/TodoApp/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png?raw=true" alt="ToDoApp" width="200"></a>
+  <a href="#"><img src="https://github.com/Ruslan141/TodoApp/blob/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png?raw=true" alt="ToDoApp" width="200"></a>
   <h3 align="center">
   ToDoApp
   </h3>
