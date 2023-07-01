@@ -70,8 +70,9 @@ class TodoItemRepositoryImpl(
 
     override suspend fun updateTodoItem(todoItem: TodoItem) {
 
+        todoItemLocalDataSource.updateTodoItem(todoItem.toData())
+
         handleNetworkOperation {
-            todoItemLocalDataSource.updateTodoItem(todoItem.toData())
 
             val actualRevision = todoItemRemoteDataSource.updateTodoItem(
                 todoItem.toData(),
@@ -85,6 +86,8 @@ class TodoItemRepositoryImpl(
 
     override suspend fun removeTodoItem(id: String) {
 
+        todoItemLocalDataSource.removeTodoItem(id)
+
         handleNetworkOperation {
             val actualRevision = todoItemRemoteDataSource.removeTodoItem(
                 id,
@@ -92,7 +95,6 @@ class TodoItemRepositoryImpl(
             ).lastRevision
             revisionDataSource.save(actualRevision)
         }
-        todoItemLocalDataSource.removeTodoItem(id)
     }
 
     override suspend fun getTodoItemById(id: String) =
