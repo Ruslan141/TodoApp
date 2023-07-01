@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
@@ -27,6 +28,7 @@ import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
 import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
+import ru.versoit.todoapp.data.storage.datasources.TokenDataSourceImpl
 import ru.versoit.todoapp.databinding.FragmentTodoItemsBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
@@ -107,9 +109,19 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                     .show()
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
     }
 
+
+
     private fun createItemsList() {
+
+        viewModel.loadTodoItems()
 
         val recyclerView = binding.recyclerViewTasks
         val adapter = TodoItemsAdapter(viewModel, viewModel, this)
@@ -117,19 +129,18 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        viewModel.showCompletedTodoItems()
-
         viewLifecycleOwner.lifecycleScope.launch {
 
-            viewModel.getAllTodoItems().collect {
-                adapter.submitList(it)
+            viewModel.todoItemsFlow.collect { list ->
+                adapter.submitList(list)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getReadyStatesAmount().collect {amount ->
+
+            viewModel.todoItemsDoneAmount.collect { doneAmount ->
                 val completedText =
-                    "${getString(R.string.completed)} - $amount"
+                    "${getString(R.string.completed)} - $doneAmount"
                 binding.textViewCompleted.text = completedText
             }
         }
@@ -292,7 +303,8 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
         val repository = TodoItemRepositoryImpl(
             RoomTodoItemDataSource(requireContext()),
             RetrofitTodoItemDataSource(),
-            SharedPrefsRevisionDataSource(requireContext())
+            SharedPrefsRevisionDataSource(requireContext()),
+            TokenDataSourceImpl(requireContext())
         )
 
         viewModel = ViewModelProvider(

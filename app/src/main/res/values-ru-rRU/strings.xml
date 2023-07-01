@@ -26,4 +26,6 @@
     <string name="data_synchronized">Данные синхронизированы</string>
     <string name="network_error">Ошибка сети</string>
     <string name="retry">Повторить</string>
+    <string name="try_again_later">Повторите попытку позже</string>
+    <string name="loading">Загрузка</string>
 </resources>

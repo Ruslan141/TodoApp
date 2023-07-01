@@ -11,6 +11,7 @@ import ru.versoit.todoapp.data.storage.datasources.LocalTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.RemoteTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.RevisionDataSource
 import ru.versoit.todoapp.data.storage.datasources.TodoItemsResponse
+import ru.versoit.todoapp.data.storage.datasources.TokenDataSource
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.repository.InternetFailure
 import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
@@ -22,6 +23,7 @@ class TodoItemRepositoryImpl(
     private val todoItemLocalDataSource: LocalTodoItemDataSource,
     private val todoItemRemoteDataSource: RemoteTodoItemDataSource,
     private val revisionDataSource: RevisionDataSource,
+    private val tokenDataSource: TokenDataSource
 ) : TodoItemRepository, SyncCallback, InternetFailure, NetworkSynchronizer {
 
     override var onSyncSuccess: suspend () -> Unit = {}
@@ -31,6 +33,9 @@ class TodoItemRepositoryImpl(
     override var onInternetFailure: suspend () -> Unit = {}
 
     override suspend fun getAllTodoItems(): Flow<List<TodoItem>> {
+
+        todoItemRemoteDataSource.token = tokenDataSource.getValue()
+        todoItemRemoteDataSource.setupSettings()
 
         handleNetworkOperation {
             synchronizeWithNetwork()

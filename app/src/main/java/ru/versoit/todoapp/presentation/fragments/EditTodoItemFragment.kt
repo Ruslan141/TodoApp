@@ -19,6 +19,7 @@ import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
 import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
+import ru.versoit.todoapp.data.storage.datasources.TokenDataSourceImpl
 import ru.versoit.todoapp.databinding.FragmentEditTodoItemBinding
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
@@ -38,14 +39,16 @@ class EditTodoItemFragment : Fragment() {
                 TodoItemRepositoryImpl(
                     RoomTodoItemDataSource(requireContext()),
                     RetrofitTodoItemDataSource(),
-                    SharedPrefsRevisionDataSource(requireContext())
+                    SharedPrefsRevisionDataSource(requireContext()),
+                    TokenDataSourceImpl(requireContext())
                 )
             ),
             TodoItemRemoveUseCase(
                 TodoItemRepositoryImpl(
                     RoomTodoItemDataSource(requireContext()),
                     RetrofitTodoItemDataSource(),
-                    SharedPrefsRevisionDataSource(requireContext())
+                    SharedPrefsRevisionDataSource(requireContext()),
+                    TokenDataSourceImpl(requireContext())
                 )
             )
         )

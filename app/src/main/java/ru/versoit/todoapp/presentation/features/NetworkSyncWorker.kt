@@ -16,6 +16,7 @@ import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
 import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
 import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
+import ru.versoit.todoapp.data.storage.datasources.TokenDataSourceImpl
 import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
 import java.time.Duration
 
@@ -27,7 +28,8 @@ class NetworkSyncWorker(
     private val synchronizer: NetworkSynchronizer = TodoItemRepositoryImpl(
         RoomTodoItemDataSource(context),
         RetrofitTodoItemDataSource(),
-        SharedPrefsRevisionDataSource(context)
+        SharedPrefsRevisionDataSource(context),
+        TokenDataSourceImpl(context)
     )
 
     companion object {

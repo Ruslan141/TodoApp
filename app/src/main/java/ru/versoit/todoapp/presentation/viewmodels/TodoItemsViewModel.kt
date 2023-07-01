@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
@@ -23,8 +22,16 @@ class TodoItemsViewModel(
     private val syncCallback: SyncCallback,
 ) : ViewModel(), TodoItemUpdater, TodoItemRemover {
 
-    private val _hideCompleted: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _hideCompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val hideCompleted: Flow<Boolean> = _hideCompleted
+
+    private var todoItemsList = listOf<TodoItem>()
+
+    private val _todoItemsFlow: MutableStateFlow<List<TodoItem>?> = MutableStateFlow(null)
+    val todoItemsFlow: Flow<List<TodoItem>?> = _todoItemsFlow
+
+    private val _todoItemsDoneAmount = MutableStateFlow(0)
+    val todoItemsDoneAmount: Flow<Int> = _todoItemsDoneAmount
 
     private var lastDeleted: TodoItem? = null
 
@@ -34,7 +41,21 @@ class TodoItemsViewModel(
         }
     }
 
-    suspend fun getReadyStatesAmount() = getAllTodoItems().map { list -> list.count{ it.done } }
+    fun loadTodoItems() {
+
+        viewModelScope.launch {
+            getAllTodoItemsUseCase().collect { list ->
+                todoItemsList = list.sortedByDescending { todoItem -> todoItem.created }
+                _todoItemsFlow.value = todoItemsList
+
+                _todoItemsDoneAmount.value = todoItemsList.count { todoItem -> todoItem.done }
+
+                if (_hideCompleted.value) {
+                    _todoItemsFlow.value = todoItemsList.filterNot { todoItem -> todoItem.done }
+                }
+            }
+        }
+    }
 
     suspend fun synchronizeWithNetwork() {
         networkSynchronizer.synchronizeWithNetwork()
@@ -42,6 +63,7 @@ class TodoItemsViewModel(
 
     fun hideCompletedTodoItems() {
         _hideCompleted.value = true
+        _todoItemsFlow.value = todoItemsList.filterNot { todoItem -> todoItem.done }
     }
 
     override fun removeTodoItem(todoItem: TodoItem) {
@@ -68,19 +90,12 @@ class TodoItemsViewModel(
         }
     }
 
-    suspend fun getAllTodoItems(): Flow<List<TodoItem>> {
-        return if (_hideCompleted.value) {
-            getAllTodoItemsUseCase().map { list -> list.filter { element -> element.done }  }
-        } else {
-            getAllTodoItemsUseCase()
-        }
-    }
-
     fun setSyncFailureCallback(action: suspend () -> Unit) {
         syncCallback.onSyncFailure = action
     }
 
     fun showCompletedTodoItems() {
+        _todoItemsFlow.value = todoItemsList
         _hideCompleted.value = false
     }
 

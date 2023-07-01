@@ -21,37 +21,48 @@ class RetrofitTodoItemDataSource : RemoteTodoItemDataSource {
 
         const val BASE_URL: String = "https://beta.mrdekk.ru/todobackend/"
 
-        const val TOKEN = "overmultiplication"
-
         const val AUTHORIZATION = "Authorization"
 
-        const val BEARER = "Bearer"
+        const val OAUTH = "OAuth"
 
         const val REVISION_FAILURE = 400
     }
 
-    private val interceptor = Interceptor { chain ->
-        val request = chain.request().newBuilder()
-            .addHeader(AUTHORIZATION, "$BEARER $TOKEN")
+    override var token: String? = null
+
+    private var interceptor: Interceptor? = null
+
+    private var client: OkHttpClient? = null
+
+    private var retrofit: Retrofit? = null
+
+    private var todoItemApi: TaskApiService? = null
+
+    override suspend fun setupSettings() {
+
+        interceptor = Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader(AUTHORIZATION, "$OAUTH $token")
+                .build()
+
+            chain.proceed(request)
+        }
+
+        client = OkHttpClient.Builder()
+            .addInterceptor(interceptor!!)
             .build()
 
-        chain.proceed(request)
+        retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client!!)
+            .build()
+
+        todoItemApi = retrofit!!.create(TaskApiService::class.java)
     }
 
-    private val client: OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(interceptor)
-        .build()
-
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
-        .build()
-
-    private val todoItemApi = retrofit.create(TaskApiService::class.java)
-
     override suspend fun getAllTodoItems(): Flow<TodoItemsResponse> = flow {
-        val response = todoItemApi.getAllTodoItems()
+        val response = todoItemApi!!.getAllTodoItems()
 
         val body = handleResponseFailures(response)
 
@@ -65,7 +76,7 @@ class RetrofitTodoItemDataSource : RemoteTodoItemDataSource {
         status: String
     ): TodoItemsResponse {
 
-        val response = todoItemApi.addTodoItem(
+        val response = todoItemApi!!.addTodoItem(
             revision,
             TodoItemContainer(
                 status = status,
@@ -87,7 +98,7 @@ class RetrofitTodoItemDataSource : RemoteTodoItemDataSource {
         revision: Int,
         status: String
     ): TodoItemResponse {
-        val response = todoItemApi.updateTodoItem(
+        val response = todoItemApi!!.updateTodoItem(
             revision,
             todoItem.id,
             TodoItemContainer(
@@ -105,7 +116,7 @@ class RetrofitTodoItemDataSource : RemoteTodoItemDataSource {
     }
 
     override suspend fun removeTodoItem(id: String, revision: Int): TodoItemResponse {
-        val response = todoItemApi.removeTodoItem(revision, id)
+        val response = todoItemApi!!.removeTodoItem(revision, id)
 
         val body = handleResponseFailures(response)
 
@@ -113,7 +124,7 @@ class RetrofitTodoItemDataSource : RemoteTodoItemDataSource {
     }
 
     override suspend fun getTodoItemById(id: String): Flow<TodoItemResponse> = flow {
-        val response = todoItemApi.getTodoItem(id)
+        val response = todoItemApi!!.getTodoItem(id)
 
         if (response.isSuccessful) {
             val todoItem = response.body()
@@ -128,7 +139,7 @@ class RetrofitTodoItemDataSource : RemoteTodoItemDataSource {
         status: String,
         revision: Int
     ): Int {
-        val actualRevision = todoItemApi.updateAllTodoItems(
+        val actualRevision = todoItemApi!!.updateAllTodoItems(
             revision,
             TodoItemsContainer(
                 status = status,

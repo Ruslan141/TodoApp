@@ -20,6 +20,10 @@ interface RemoteTodoItemDataSource {
     suspend fun getTodoItemById(id: String): Flow<TodoItemResponse>
 
     suspend fun updateAllTodoItems(todoItems: List<TodoItemData>, status: String, revision: Int): Int
+
+    suspend fun setupSettings()
+
+    var token: String?
 }
 
 data class TodoItemResponse(val data: TodoItemData?, val lastRevision: Int)
