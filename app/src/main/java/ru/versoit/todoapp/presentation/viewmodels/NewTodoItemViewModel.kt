@@ -1,11 +1,14 @@
 package ru.versoit.todoapp.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import ru.versoit.todoapp.domain.models.Importance
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
+import ru.versoit.todoapp.utils.DATE_FORMAT
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -13,11 +16,11 @@ import java.util.Locale
 
 class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) : ViewModel() {
 
-    private val _deadline = MutableLiveData(Date())
-    val deadline: LiveData<Date> = _deadline
+    private val _deadline = MutableStateFlow(Date())
+    val deadline: Flow<Date> = _deadline
 
-    private val _importance = MutableLiveData(Importance.UNIMPORTANT)
-    val importance: LiveData<Importance> = _importance
+    private val _importance = MutableStateFlow(Importance.UNIMPORTANT)
+    val importance: Flow<Importance> = _importance
 
     var text = ""
         set(value) {
@@ -30,7 +33,7 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
 
     val formattedDate: String
         get() = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(
-            _deadline.value!!
+            _deadline.value
         )
 
     val isInvalidDeadline: Boolean
@@ -47,17 +50,20 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
 
         val todoItem =
             TodoItem(
-                "",
-                text,
-                importance.value!!,
-                deadline.value!!,
-                false,
-                isDeadline,
-                Date(),
-                Date()
+                id = "",
+                text = text,
+                importance = _importance.value,
+                deadline = if (isDeadline) _deadline.value else null,
+                done = false,
+                lastUpdatedBy = "some_user",
+                lastUpdate = Date(),
+                created = Date(),
+                color = null
             )
 
-        addTodoItemUseCase.addTodoItem(todoItem)
+        viewModelScope.launch {
+            addTodoItemUseCase(todoItem)
+        }
     }
 
     fun updateDate(day: Int, month: Int, year: Int) {
@@ -73,21 +79,21 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
     val year: Int
         get() {
             val calendar = Calendar.getInstance()
-            calendar.time = deadline.value!!
+            calendar.time = _deadline.value
             return calendar.get(Calendar.YEAR)
         }
 
     val month: Int
         get() {
             val calendar = Calendar.getInstance()
-            calendar.time = deadline.value!!
+            calendar.time = _deadline.value
             return calendar.get(Calendar.MONTH)
         }
 
     val day: Int
         get() {
             val calendar = Calendar.getInstance()
-            calendar.time = deadline.value!!
+            calendar.time = _deadline.value
             return calendar.get(Calendar.DAY_OF_MONTH)
         }
 

@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.fragments
+package ru.versoit.todoapp.presentation.features
 
 import ru.versoit.todoapp.domain.models.TodoItem
 

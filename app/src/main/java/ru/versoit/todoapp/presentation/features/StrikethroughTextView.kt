@@ -1,4 +1,4 @@
-package ru.versoit.todoapp.presentation.views
+package ru.versoit.todoapp.presentation.features
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -9,7 +9,7 @@ import com.google.android.material.textview.MaterialTextView
 import kotlin.math.max
 import kotlin.math.min
 
-class CustomTextView @JvmOverloads constructor(
+class StrikethroughTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MaterialTextView(context, attrs, defStyleAttr) {
     private var lineFraction = 0f

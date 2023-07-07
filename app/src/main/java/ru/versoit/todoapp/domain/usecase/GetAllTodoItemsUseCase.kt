@@ -4,5 +4,5 @@ import ru.versoit.todoapp.domain.repository.TodoItemRepository
 
 class GetAllTodoItemsUseCase(private val todoItemRepository: TodoItemRepository) {
 
-    fun getAllTodoItems() = todoItemRepository.getAllTodoItems()
+    suspend operator fun invoke() = todoItemRepository.getAllTodoItems()
 }

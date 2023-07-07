@@ -1,11 +1,13 @@
 package ru.versoit.todoapp.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.versoit.todoapp.domain.models.TodoItem
+import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
+import ru.versoit.todoapp.domain.repository.SyncCallback
 import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
 import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
@@ -15,82 +17,89 @@ class TodoItemsViewModel(
     private val todoItemUpdateUseCase: TodoItemUpdateUseCase,
     private val todoItemRemoveUseCase: TodoItemRemoveUseCase,
     private val addTodoItemUseCase: AddTodoItemUseCase,
-    private val getAllTodoItemsUseCase: GetAllTodoItemsUseCase
+    private val getAllTodoItemsUseCase: GetAllTodoItemsUseCase,
+    private val networkSynchronizer: NetworkSynchronizer,
+    private val syncCallback: SyncCallback,
 ) : ViewModel(), TodoItemUpdater, TodoItemRemover {
 
-    private val _todoItems: MutableLiveData<List<TodoItem>> = MutableLiveData()
-    val todoItemsObservable: LiveData<List<TodoItem>> = _todoItems
+    private val _hideCompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val hideCompleted: Flow<Boolean> = _hideCompleted
 
-    private var todoItems = listOf<TodoItem>()
+    private var todoItemsList = listOf<TodoItem>()
 
-    lateinit var lastDeleted: TodoItem
-        private set
+    private val _todoItemsFlow: MutableStateFlow<List<TodoItem>?> = MutableStateFlow(null)
+    val todoItemsFlow: Flow<List<TodoItem>?> = _todoItemsFlow
 
-    lateinit var lastCompleted: TodoItem
-        private set
+    private val _todoItemsDoneAmount = MutableStateFlow(0)
+    val todoItemsDoneAmount: Flow<Int> = _todoItemsDoneAmount
 
-    private val _isHidden = MutableLiveData<Boolean>(false)
-    val isHidden: LiveData<Boolean> = _isHidden
+    private var lastDeleted: TodoItem? = null
 
-    private val isHiddenValue get() = _isHidden.value!!
-
-    init {
-        loadTodoItems()
+    override fun updateTodoItem(todoItem: TodoItem) {
+        viewModelScope.launch {
+            todoItemUpdateUseCase(todoItem)
+        }
     }
 
-    override fun updateTodoItem(todoItem: TodoItem) = todoItemUpdateUseCase.updateTodoItem(todoItem)
-
-    val readyStatesAmount get() = todoItems.count { it.completed }
-
-    private fun loadTodoItems() {
+    fun loadTodoItems() {
 
         viewModelScope.launch {
-            getAllTodoItemsUseCase.getAllTodoItems().collect { it ->
-                todoItems = it
-                todoItems = todoItems.sortedBy { it.id }
-                updateLiveData(todoItems)
+            getAllTodoItemsUseCase().collect { list ->
+                todoItemsList = list.sortedByDescending { todoItem -> todoItem.created }
+                _todoItemsFlow.value = todoItemsList
+
+                _todoItemsDoneAmount.value = todoItemsList.count { todoItem -> todoItem.done }
+
+                if (_hideCompleted.value) {
+                    _todoItemsFlow.value = todoItemsList.filterNot { todoItem -> todoItem.done }
+                }
             }
         }
     }
 
-    private fun updateLiveData(todoItems: List<TodoItem>) {
-
-        if (isHiddenValue) {
-            _todoItems.value = todoItems.filter { !it.completed }
-            return
-        }
-
-        _todoItems.value = todoItems
+    suspend fun synchronizeWithNetwork() {
+        networkSynchronizer.synchronizeWithNetwork()
     }
 
     fun hideCompletedTodoItems() {
-        _isHidden.value = true
-        _todoItems.value = todoItems.filter { !it.completed }
+        _hideCompleted.value = true
+        _todoItemsFlow.value = todoItemsList.filterNot { todoItem -> todoItem.done }
     }
 
-    override fun removeTodoItem(position: Int) {
-        val todoItem = todoItems[position]
-        lastDeleted = todoItem
-        todoItemRemoveUseCase.removeTodoItem(todoItem.id)
+    override fun removeTodoItem(todoItem: TodoItem) {
+
+        viewModelScope.launch {
+            todoItemRemoveUseCase(todoItem.id)
+            lastDeleted = todoItem
+        }
     }
 
-    fun setCompletedTodoItem(position: Int) {
-        val todoItem = todoItems[position]
-        todoItem.completed = true
-        lastCompleted = todoItem
-        todoItemRemoveUseCase.removeTodoItem(todoItem.id)
+    fun setCompletedTodoItem(todoItem: TodoItem) {
+
+        viewModelScope.launch {
+            todoItemUpdateUseCase(todoItem.copy(done = true))
+        }
     }
 
-    fun undoDeletedTodoItem() = addTodoItemUseCase.addTodoItem(lastDeleted)
+    fun undoDeletedTodoItem() {
 
-    fun undoCompletedTodoItem() {
-        lastCompleted.completed = false
-        addTodoItemUseCase.addTodoItem(lastCompleted)
+        viewModelScope.launch {
+            lastDeleted?.let {
+                addTodoItemUseCase(it)
+            }
+        }
     }
 
+    fun setSyncFailureCallback(action: suspend () -> Unit) {
+        syncCallback.onSyncFailure = action
+    }
 
     fun showCompletedTodoItems() {
-        _isHidden.value = false
-        _todoItems.value = todoItems
+        _todoItemsFlow.value = todoItemsList
+        _hideCompleted.value = false
+    }
+
+    fun isTodoItemsHidden(): Boolean {
+        return _hideCompleted.value
     }
 }

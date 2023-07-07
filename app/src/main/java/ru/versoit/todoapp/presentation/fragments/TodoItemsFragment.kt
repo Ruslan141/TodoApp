@@ -8,28 +8,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
-import ru.versoit.todoapp.data.storage.datasources.mock.MockTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
+import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
+import ru.versoit.todoapp.data.storage.datasources.TokenDataSourceImpl
 import ru.versoit.todoapp.databinding.FragmentTodoItemsBinding
 import ru.versoit.todoapp.domain.models.TodoItem
 import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
 import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
 import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
-import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.features.TodoItemEditor
+import ru.versoit.todoapp.presentation.features.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.features.vmfactory.TodoItemsViewModelFactory
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemsViewModel
-import ru.versoit.todoapp.presentation.vmfactory.TodoItemsViewModelFactory
 
 
 class TodoItemsFragment : Fragment(), TodoItemEditor {
@@ -39,15 +48,7 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
 
     private var vibrator: Vibrator? = null
 
-    private val viewModel: TodoItemsViewModel by viewModels {
-
-        TodoItemsViewModelFactory(
-            TodoItemUpdateUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
-            TodoItemRemoveUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
-            AddTodoItemUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
-            GetAllTodoItemsUseCase(TodoItemRepositoryImpl(MockTodoItemDataSource)),
-        )
-    }
+    lateinit var viewModel: TodoItemsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -59,6 +60,7 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewModel()
         init()
     }
 
@@ -75,19 +77,51 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
         }
 
         createItemsList()
-
         bindTryHidingItemsTo(binding.imageViewHide)
-        bindTryHidingItemsTo(binding.navBar.imageViewHideInNavBar)
 
-        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > binding.textViewTasks.top) {
-                binding.navBar.root.visibility = View.VISIBLE
-            } else
-                binding.navBar.root.visibility = View.GONE
+        with(binding) {
+
+            swipeRefreshLayout.setProgressViewOffset(false, -100, 10)
+
+            swipeRefreshLayout.setOnRefreshListener {
+                swipeRefreshLayout.isRefreshing = true
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.synchronizeWithNetwork()
+                    swipeRefreshLayout.isRefreshing = false
+                }
+            }
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            viewModel.setSyncFailureCallback {
+                Snackbar.make(
+                    this@TodoItemsFragment.requireView(),
+                    R.string.network_error,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.retry) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.synchronizeWithNetwork()
+                        }
+                    }
+                    .show()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
     }
 
+
+
     private fun createItemsList() {
+
+        viewModel.loadTodoItems()
 
         val recyclerView = binding.recyclerViewTasks
         val adapter = TodoItemsAdapter(viewModel, viewModel, this)
@@ -95,11 +129,20 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        viewModel.todoItemsObservable.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            val completedText = "${getString(R.string.completed)} - ${viewModel.readyStatesAmount}"
-            binding.textViewCompleted.text = completedText
+            viewModel.todoItemsFlow.collect { list ->
+                adapter.submitList(list)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            viewModel.todoItemsDoneAmount.collect { doneAmount ->
+                val completedText =
+                    "${getString(R.string.completed)} - $doneAmount"
+                binding.textViewCompleted.text = completedText
+            }
         }
 
         val simpleCallback = object :
@@ -118,7 +161,7 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
 
                 when (direction) {
                     ItemTouchHelper.LEFT -> {
-                        viewModel.removeTodoItem(position)
+                        viewModel.removeTodoItem(adapter[position])
                         performVibration()
                         Snackbar.make(
                             recyclerView,
@@ -131,16 +174,10 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                     }
 
                     ItemTouchHelper.RIGHT -> {
-                        viewModel.setCompletedTodoItem(position)
-                        performVibration()
-                        Snackbar.make(
-                            recyclerView,
-                            R.string.task_completed,
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setAction(R.string.undo) {
-                                viewModel.undoCompletedTodoItem()
-                            }.show()
+                        if (!adapter[position].done) {
+                            viewModel.setCompletedTodoItem(adapter[position])
+                            performVibration()
+                        }
                     }
                 }
             }
@@ -154,6 +191,19 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
+                val position = viewHolder.absoluteAdapterPosition
+                if (position >= 0 && dX > 0 && adapter[position].done) {
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        0f,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+                    return
+                }
                 RecyclerViewSwipeDecorator.Builder(
                     c,
                     recyclerView,
@@ -186,32 +236,23 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
             }
         }
 
-        viewModel.isHidden.observe(viewLifecycleOwner) {
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            if (!it) {
-                binding.imageViewHide.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(), R.drawable.ic_show
-                    )
-                )
+            viewModel.hideCompleted.collect { isHidden ->
 
-                binding.navBar.imageViewHideInNavBar.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(), R.drawable.ic_show
+                if (!isHidden) {
+                    binding.imageViewHide.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(), R.drawable.ic_show
+                        )
                     )
-                )
-            } else {
-                binding.imageViewHide.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(), R.drawable.ic_hide
+                } else {
+                    binding.imageViewHide.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(), R.drawable.ic_hide
+                        )
                     )
-                )
-
-                binding.navBar.imageViewHideInNavBar.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(), R.drawable.ic_hide
-                    )
-                )
+                }
             }
         }
 
@@ -223,7 +264,7 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
 
         view.setOnClickListener {
 
-            if (viewModel.isHidden.value!!) {
+            if (viewModel.isTodoItemsHidden()) {
                 viewModel.showCompletedTodoItems()
                 return@setOnClickListener
             }
@@ -241,7 +282,7 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
                 it.vibrate(
                     VibrationEffect.createOneShot(
                         vibrationDuration,
-                        VibrationEffect.DEFAULT_AMPLITUDE
+                        VibrationEffect.EFFECT_HEAVY_CLICK
                     )
                 )
             }
@@ -256,5 +297,33 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun initViewModel() {
+        val repository = TodoItemRepositoryImpl(
+            RoomTodoItemDataSource(requireContext()),
+            RetrofitTodoItemDataSource(),
+            SharedPrefsRevisionDataSource(requireContext()),
+            TokenDataSourceImpl(requireContext())
+        )
+
+        viewModel = ViewModelProvider(
+            this, TodoItemsViewModelFactory(
+                TodoItemUpdateUseCase(
+                    repository
+                ),
+                TodoItemRemoveUseCase(
+                    repository
+                ),
+                AddTodoItemUseCase(
+                    repository
+                ),
+                GetAllTodoItemsUseCase(
+                    repository
+                ),
+                repository,
+                repository
+            )
+        )[TodoItemsViewModel::class.java]
     }
 }

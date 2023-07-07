@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id("androidx.navigation.safeargs.kotlin")
+    id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -19,6 +21,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        manifestPlaceholders = [YANDEX_CLIENT_ID:"1ad50135727e4da1a55383989b7037f1"]
     }
 
     buildTypes {
@@ -76,4 +80,13 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "androidx.room:room-ktx:2.5.2"
+    kapt 'androidx.room:room-compiler:2.5.2'
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.work:work-runtime:2.8.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation "com.yandex.android:authsdk:2.5.1"
 }

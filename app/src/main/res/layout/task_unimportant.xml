@@ -25,7 +25,7 @@
 
         android:layout_weight="1">
 
-        <ru.versoit.todoapp.presentation.views.CustomTextView
+        <ru.versoit.todoapp.presentation.features.StrikethroughTextView
             android:id="@+id/textView_text"
             android:layout_width="match_parent"
 
@@ -35,7 +35,7 @@
             android:ellipsize="end"
             android:maxLines="3" />
 
-        <ru.versoit.todoapp.presentation.views.CustomTextView
+        <ru.versoit.todoapp.presentation.features.StrikethroughTextView
             android:id="@+id/textView_deadline"
             android:layout_width="match_parent"
 

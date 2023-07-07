@@ -9,14 +9,14 @@ enum class Importance {
     IMPORTANT
 }
 
-
 data class TodoItem(
-    val id: String,
-    var text: String,
-    var importance: Importance,
-    var deadline: Date,
-    var completed: Boolean,
-    var isDeadline: Boolean,
-    var dateCreate: Date,
-    var lastChanged: Date
+    var id: String,
+    val text: String,
+    val importance: Importance,
+    val deadline: Date?,
+    val done: Boolean,
+    val color: String?,
+    val created: Date,
+    val lastUpdate: Date,
+    val lastUpdatedBy: String
 ) : Serializable

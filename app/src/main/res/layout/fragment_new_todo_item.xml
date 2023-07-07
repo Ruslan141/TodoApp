@@ -2,67 +2,96 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/color_background_window"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/color_background_window">
 
-    <include
-        android:id="@+id/nav_bar"
-        layout="@layout/new_item_nav_bar"
-
-        android:visibility="gone"
-
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-    <ScrollView
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/color_background_window"
+            android:fitsSystemWindows="true"
+            app:collapsedTitleTextAppearance="@style/CollapsedAppBarTitle"
+            app:expandedTitleMarginBottom="52dp"
+            app:expandedTitleMarginStart="62dp"
+            app:expandedTitleTextAppearance="@style/TextViewHeader"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleCollapseMode="scale"
+            app:toolbarId="@id/toolbar">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="20dp">
+
+                <ImageView
+                    android:id="@+id/imageView_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginVertical="32dp"
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+
+                    android:contentDescription="@string/cancel"
+
+                    android:padding="10dp"
+
+                    android:src="@drawable/ic_cancel"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:background="?attr/selectableItemBackground"
+
+                    android:clickable="true"
+                    android:contentDescription="@string/cancel"
+
+                    android:padding="10dp"
+
+                    android:text="@string/add_task"
+                    android:textAllCaps="true"
+
+                    android:textColor="@color/primary"
+
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".presentation.fragments.NewTodoItemFragment">
-
-            <ImageView
-                android:id="@+id/imageView_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:padding="10dp"
-
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-
-                android:layout_marginVertical="32dp"
-
-                android:contentDescription="@string/cancel"
-
-                android:src="@drawable/ic_cancel"
-                app:layout_constraintStart_toStartOf="@id/textInputLayout"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/textView_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:padding="10dp"
-
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-
-                android:contentDescription="@string/cancel"
-
-                android:text="@string/add_task"
-                android:textAllCaps="true"
-
-                android:textColor="@color/primary"
-
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/imageView_cancel"
-                app:layout_constraintEnd_toEndOf="@id/textInputLayout" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"
@@ -80,7 +109,7 @@
                 app:boxStrokeWidthFocused="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageView_cancel">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editText_task"
@@ -90,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
 
-                    android:hint="@string/what_should_be_done"/>
+                    android:hint="@string/what_should_be_done" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,25 +127,25 @@
                 android:id="@+id/textView_importance"
                 android:layout_width="wrap_content"
 
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="5dp"
-
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
 
                 android:background="?attr/selectableItemBackground"
-                android:clickable="true"
 
-                android:layout_marginTop="32dp"
+                android:clickable="true"
+                android:paddingHorizontal="10dp"
+
+                android:paddingVertical="5dp"
                 android:text="@string/importance"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textView_selected_importance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
                 style="@style/Widget.textViewSubhead"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
 
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="5dp"
@@ -153,13 +182,13 @@
                     android:id="@+id/textView_make_up"
                     android:layout_width="0dp"
 
-                    android:padding="10dp"
-
-                    android:alpha="0.2"
-
                     android:layout_height="wrap_content"
 
                     android:layout_weight="1"
+
+                    android:alpha="0.2"
+
+                    android:padding="10dp"
                     android:text="@string/make_up"
                     app:layout_constraintStart_toStartOf="@+id/importance_separator"
                     app:layout_constraintTop_toBottomOf="@+id/importance_separator" />
@@ -169,10 +198,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
-                    app:trackTint="@color/switch_track_color"
+                    android:checked="false"
                     app:thumbTint="@color/switch_thumb_color"
 
-                    android:checked="false" />
+                    app:trackTint="@color/switch_track_color" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -181,20 +210,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:visibility="gone"
+                android:background="?attr/selectableItemBackground"
 
-                android:textColor="@color/primary"
+                android:clickable="true"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="2dp"
 
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
+                android:textColor="@color/primary"
+                android:visibility="gone"
 
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_make_up"
-                app:layout_constraintStart_toStartOf="@id/linearLayout_make_up"/>
+                app:layout_constraintStart_toStartOf="@id/linearLayout_make_up"
+                app:layout_constraintTop_toBottomOf="@id/linearLayout_make_up" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

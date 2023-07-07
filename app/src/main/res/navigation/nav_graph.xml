@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/tasksFragment">
+    app:startDestination="@id/loadingFragment">
 
     <fragment
         android:id="@+id/tasksFragment"
@@ -38,5 +38,18 @@
         <argument
             android:name="todoItem"
             app:argType="ru.versoit.todoapp.domain.models.TodoItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="ru.versoit.todoapp.presentation.fragments.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action
+            android:id="@+id/action_loadingFragment_to_tasksFragment"
+            app:destination="@id/tasksFragment"
+            app:enterAnim="@anim/scale"
+            app:exitAnim="@anim/scale_out"
+            app:popEnterAnim="@anim/scale_pop"
+            app:popExitAnim="@anim/scale_out_pop"/>
     </fragment>
 </navigation>

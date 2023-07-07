@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.databinding.TaskUnimportantBinding
 import ru.versoit.todoapp.domain.models.TodoItem
-import ru.versoit.todoapp.presentation.adapters.TodoItemsAdapter
-import ru.versoit.todoapp.presentation.fragments.TodoItemEditor
-import ru.versoit.todoapp.presentation.viewmodels.DATE_FORMAT
+import ru.versoit.todoapp.presentation.features.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.features.TodoItemEditor
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemUpdater
+import ru.versoit.todoapp.utils.DATE_FORMAT
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class UnimportantTodoItemViewHolder(
@@ -37,22 +38,24 @@ class UnimportantTodoItemViewHolder(
     }
 
     override fun bind(model: TodoItem) {
-        binding.textViewText.text = model.text
-        binding.checkBoxState.isChecked = model.completed
-        setTextState(model.completed)
 
-        binding.checkBoxState.setOnClickListener {
-            setTextState(binding.checkBoxState.isChecked)
-            model.completed = binding.checkBoxState.isChecked
-            todoItemUpdater.updateTodoItem(model)
-        }
+        with(binding) {
+            textViewText.text = model.text
+            checkBoxState.isChecked = model.done
+            setTextState(model.done)
 
-        if (model.isDeadline) {
-            binding.textViewDeadline.visibility = View.VISIBLE
-            binding.textViewDeadline.text =
-                SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(model.deadline)
-        } else {
-            binding.textViewDeadline.visibility = View.GONE
+            checkBoxState.setOnClickListener {
+                setTextState(checkBoxState.isChecked)
+                todoItemUpdater.updateTodoItem(model.copy(done = checkBoxState.isChecked, lastUpdate = Date()))
+            }
+
+            if (model.deadline != null) {
+                textViewDeadline.visibility = View.VISIBLE
+                textViewDeadline.text =
+                    SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(model.deadline)
+            } else {
+                textViewDeadline.visibility = View.GONE
+            }
         }
 
         itemView.setOnLongClickListener { it ->
@@ -64,7 +67,7 @@ class UnimportantTodoItemViewHolder(
 
                 when (it.itemId) {
                     R.id.remove -> {
-                        todoItemRemover.removeTodoItem(absoluteAdapterPosition)
+                        todoItemRemover.removeTodoItem(model)
                         true
                     }
 
@@ -86,9 +89,12 @@ class UnimportantTodoItemViewHolder(
     }
 
     private fun setTextState(isChecked: Boolean) {
-        if (!isChecked)
-            binding.textViewText.animateRemoveStrikeThrough()
-        else
-            binding.textViewText.animateStrikeThrough()
+
+        with(binding) {
+            if (!isChecked)
+                textViewText.animateRemoveStrikeThrough()
+            else
+                textViewText.animateStrikeThrough()
+        }
     }
 }

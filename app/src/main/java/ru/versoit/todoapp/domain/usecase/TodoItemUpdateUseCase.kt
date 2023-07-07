@@ -5,5 +5,5 @@ import ru.versoit.todoapp.domain.repository.TodoItemRepository
 
 class TodoItemUpdateUseCase(private val repository: TodoItemRepository) {
 
-    fun updateTodoItem(todoItem: TodoItem) = repository.updateTodoItem(todoItem)
+    suspend operator fun invoke(todoItem: TodoItem) = repository.updateTodoItem(todoItem)
 }
