@@ -5,11 +5,13 @@ import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
 
+/**
+ * Shell for yandex auth
+ *
+ * @property sdk Represents YandexAuth sdk
+ * @property intent Represents login Intent
+ */
 class YandexAuth(context: Context) {
-
-    companion object {
-        const val REQUEST_LOGIN_SDK = 1
-    }
 
     private val loginOptionsBuilder = YandexAuthLoginOptions.Builder()
 

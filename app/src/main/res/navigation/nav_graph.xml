@@ -37,7 +37,7 @@
         android:label="EditTodoItemFragment">
         <argument
             android:name="todoItem"
-            app:argType="ru.versoit.todoapp.domain.models.TodoItem" />
+            app:argType="ru.versoit.domain.models.TodoItem" />
     </fragment>
     <fragment
         android:id="@+id/loadingFragment"

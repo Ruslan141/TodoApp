@@ -9,6 +9,11 @@ import com.google.android.material.textview.MaterialTextView
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Custom view with strikethrough option
+ *
+ * @property isAlphaAnimate Allows enable alpha animation.
+ */
 class StrikethroughTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MaterialTextView(context, attrs, defStyleAttr) {
@@ -22,18 +27,22 @@ class StrikethroughTextView @JvmOverloads constructor(
 
     init {
         linePaint.style = Paint.Style.STROKE
-        linePaint.strokeWidth = 3f
+        linePaint.strokeWidth = STROKE_WIDTH
         linePaint.isAntiAlias = true
         linePaint.color = currentTextColor
     }
 
     companion object {
 
+        const val STROKE_WIDTH = 3f
+
         private const val HEIGHT_DIVIDER = 1.8f
 
         private const val APPEARANCE_DURATION = 480
 
         private const val DISAPPEARANCE_DURATION = 420
+
+        private const val MIN_FRACTION = 0.2f
     }
 
     private val textHeight get() = height / lineCount
@@ -45,7 +54,7 @@ class StrikethroughTextView @JvmOverloads constructor(
 
         var lineToDrawHeight = textHeight / HEIGHT_DIVIDER
 
-        for (line in 1..lineCount) {
+        repeat(lineCount) {
 
             val startX = 0f
             val startY = lineToDrawHeight
@@ -58,6 +67,9 @@ class StrikethroughTextView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Animates a left-to-right strikethrough animation on top of body text
+     */
     fun animateStrikeThrough() {
         isIncreasing = true
         isDecreasing = false
@@ -72,13 +84,16 @@ class StrikethroughTextView @JvmOverloads constructor(
             }
             lineFraction = valueAnimator.animatedValue as Float
             if (isAlphaAnimate)
-                alpha = max(1f - lineFraction, 0.2f)
+                alpha = max(1f - lineFraction, MIN_FRACTION)
             invalidate()
         }
 
         animator.start()
     }
 
+    /**
+     * Animates a right-to-left strikethrough remove animation of body text
+     */
     fun animateRemoveStrikeThrough() {
         isIncreasing = false
         isDecreasing = true
@@ -94,7 +109,7 @@ class StrikethroughTextView @JvmOverloads constructor(
             }
             lineFraction = valueAnimator.animatedValue as Float
             if (isAlphaAnimate)
-                alpha = max(1f - lineFraction, 0.2f)
+                alpha = max(1f - lineFraction, MIN_FRACTION)
             invalidate()
         }
 

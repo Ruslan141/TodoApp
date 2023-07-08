@@ -1,36 +1,29 @@
 package ru.versoit.todoapp.presentation.features
 
 import android.content.Context
-import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
-import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
-import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
-import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
-import ru.versoit.todoapp.data.storage.datasources.TokenDataSourceImpl
-import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
+import ru.versoit.data.repository.TodoItemRepositoryImpl
+import ru.versoit.data.storage.datasources.local.RoomTodoItemDataSource
+import ru.versoit.data.storage.datasources.local.SharedPrefsRevisionDataSource
+import ru.versoit.data.storage.datasources.local.TokenDataSourceImpl
+import ru.versoit.data.storage.datasources.network.NetworkSynchronizer
+import ru.versoit.data.storage.datasources.network.RetrofitTodoItemDataSource
 import java.time.Duration
 
 class NetworkSyncWorker(
     context: Context,
     workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams) {
-
-    private val synchronizer: NetworkSynchronizer = TodoItemRepositoryImpl(
-        RoomTodoItemDataSource(context),
-        RetrofitTodoItemDataSource(),
-        SharedPrefsRevisionDataSource(context),
-        TokenDataSourceImpl(context)
-    )
 
     companion object {
 
@@ -47,7 +40,18 @@ class NetworkSyncWorker(
 
             val constraints = getConstraints()
 
-            val periodicWorkRequest = PeriodicWorkRequestBuilder<NetworkSyncWorker>(
+            val request = getPeriodicWorkRequest(constraints, backoffPolicy, backoffDelay)
+
+            enqueueWorkManager(context, request)
+        }
+
+        private fun getPeriodicWorkRequest(
+            constraints: Constraints,
+            backoffPolicy: BackoffPolicy,
+            backoffDelay: Duration
+        ): PeriodicWorkRequest {
+
+            return PeriodicWorkRequestBuilder<NetworkSyncWorker>(
                 Duration.ofHours(
                     HOURS_REPEAT
                 )
@@ -55,19 +59,30 @@ class NetworkSyncWorker(
                 .setConstraints(constraints)
                 .setBackoffCriteria(backoffPolicy, backoffDelay)
                 .build()
-
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
-                periodicWorkRequest)
         }
 
         private fun getConstraints(): Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+
+        private fun enqueueWorkManager(context: Context, request: PeriodicWorkRequest) {
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                request
+            )
+        }
     }
 
+    private val synchronizer: NetworkSynchronizer = TodoItemRepositoryImpl(
+        RoomTodoItemDataSource(context),
+        RetrofitTodoItemDataSource(),
+        SharedPrefsRevisionDataSource(context),
+        TokenDataSourceImpl(context)
+    )
+
     override suspend fun doWork() = withContext(Dispatchers.IO) {
-        Log.e("WORKER", "WORKER_NETWORK_SYNCHRONIZER")
+
         if (synchronizer.synchronizeWithNetwork()) {
             Result.success()
         }

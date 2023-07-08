@@ -2,12 +2,12 @@ package ru.versoit.todoapp.presentation.features.vmfactory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ru.versoit.todoapp.domain.repository.NetworkSynchronizer
-import ru.versoit.todoapp.domain.repository.SyncCallback
-import ru.versoit.todoapp.domain.usecase.AddTodoItemUseCase
-import ru.versoit.todoapp.domain.usecase.GetAllTodoItemsUseCase
-import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
-import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
+import ru.versoit.data.storage.datasources.network.NetworkSynchronizer
+import ru.versoit.data.storage.datasources.network.SyncCallback
+import ru.versoit.domain.usecase.AddTodoItemUseCase
+import ru.versoit.domain.usecase.GetAllTodoItemsUseCase
+import ru.versoit.domain.usecase.TodoItemRemoveUseCase
+import ru.versoit.domain.usecase.TodoItemUpdateUseCase
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemsViewModel
 
 class TodoItemsViewModelFactory(

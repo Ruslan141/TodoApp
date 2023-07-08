@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     android:background="?attr/color_background_window">
 
-    <include
-        android:id="@+id/nav_bar"
-        android:visibility="gone"
-        layout="@layout/edit_item_nav_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
