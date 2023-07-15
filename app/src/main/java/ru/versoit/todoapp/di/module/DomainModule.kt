@@ -2,17 +2,31 @@ package ru.versoit.todoapp.di.module
 
 import dagger.Module
 import dagger.Provides
+import ru.versoit.domain.repository.NotificationPermissionsRepository
+import ru.versoit.domain.repository.ThemesRepository
 import ru.versoit.domain.repository.TodoItemRepository
 import ru.versoit.domain.repository.TokenRepository
 import ru.versoit.domain.usecase.AddTodoItemUseCase
 import ru.versoit.domain.usecase.GetAllTodoItemsUseCase
 import ru.versoit.domain.usecase.GetTokenUseCase
+import ru.versoit.domain.usecase.ManipulateThemesUseCase
+import ru.versoit.domain.usecase.NotificationPermissionSelectionUseCase
 import ru.versoit.domain.usecase.SaveTokenUseCase
 import ru.versoit.domain.usecase.TodoItemRemoveUseCase
 import ru.versoit.domain.usecase.TodoItemUpdateUseCase
 
 @Module
 class DomainModule {
+
+    @Provides
+    fun provideNotificationPermissionSelectionUseCase(
+        notificationPermissionsRepository: NotificationPermissionsRepository
+    ) =
+        NotificationPermissionSelectionUseCase(notificationPermissionsRepository)
+
+    @Provides
+    fun provideManipulateThemesUseCase(themesRepository: ThemesRepository) =
+        ManipulateThemesUseCase(themesRepository)
 
     @Provides
     fun provideAddTodoItemUseCase(todoItemRepository: TodoItemRepository) =

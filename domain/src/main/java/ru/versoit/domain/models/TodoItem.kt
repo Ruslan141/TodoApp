@@ -20,3 +20,10 @@ data class TodoItem(
     val lastUpdate: Date,
     val lastUpdatedBy: String
 ) : Serializable
+
+fun TodoItem.isExpired(): Boolean {
+    if (deadline == null)
+        return false
+
+    return deadline.time - System.currentTimeMillis() < 0
+}

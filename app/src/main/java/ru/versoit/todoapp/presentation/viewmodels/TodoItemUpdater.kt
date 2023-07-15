@@ -8,5 +8,5 @@ import ru.versoit.domain.models.TodoItem
 
 interface TodoItemUpdater {
 
-    fun updateTodoItem(todoItem: ru.versoit.domain.models.TodoItem)
+    fun updateTodoItem(todoItem: TodoItem)
 }

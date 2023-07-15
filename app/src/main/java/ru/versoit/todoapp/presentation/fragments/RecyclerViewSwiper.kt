@@ -14,6 +14,7 @@ import ru.versoit.todoapp.presentation.features.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemCompleter
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
 import ru.versoit.todoapp.presentation.viewmodels.UndoDeleter
+import java.util.Locale
 
 class RecyclerViewSwiper(
     private val recyclerView: RecyclerView,
@@ -26,17 +27,22 @@ class RecyclerViewSwiper(
 
     private var vibrator: Vibrator? = null
 
-
     private fun handleSwipeDirection(
         direction: Int, recyclerView: RecyclerView, adapter: TodoItemsAdapter, position: Int
     ) {
         when (direction) {
             ItemTouchHelper.LEFT -> {
                 todoItemsRemover.removeTodoItem(adapter[position])
+                val snackBarText = String.format(
+                    Locale.getDefault(),
+                    "%s %s",
+                    context.resources.getString(R.string.remove),
+                    adapter[position].text
+                )
                 performVibration()
                 Snackbar.make(
                     recyclerView,
-                    R.string.removed_todo_item,
+                    snackBarText,
                     Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.undo) {
@@ -59,7 +65,10 @@ class RecyclerViewSwiper(
     ): ItemTouchHelper.SimpleCallback {
         return object :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
             ): Boolean {
                 return false
             }
@@ -69,17 +78,26 @@ class RecyclerViewSwiper(
                 handleSwipeDirection(direction, recyclerView, adapter, position)
             }
 
-            override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
             ) {
                 val position = viewHolder.absoluteAdapterPosition
                 if (position >= 0 && dX > 0 && adapter[position].done) {
                     return
                 }
                 customizeSwipeDecorator(
-                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+                    RecyclerViewSwipeDecorator.Builder(
+                        c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
                     )
                 )
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+                super.onChildDraw(
+                    c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
                 )
             }
         }
@@ -87,9 +105,16 @@ class RecyclerViewSwiper(
 
     private fun customizeSwipeDecorator(swipeDecorator: RecyclerViewSwipeDecorator.Builder) {
 
-        swipeDecorator.addSwipeLeftBackgroundColor(ContextCompat.getColor(context, R.color.important_attention_text)).addSwipeRightBackgroundColor(
-            ContextCompat.getColor(context, R.color.activated)).addSwipeLeftActionIcon(R.drawable.ic_remove_white).addSwipeRightActionIcon(
-            R.drawable.ic_completed).create()
+        swipeDecorator.addSwipeLeftBackgroundColor(
+            ContextCompat.getColor(
+                context,
+                R.color.important_attention_text
+            )
+        ).addSwipeRightBackgroundColor(
+            ContextCompat.getColor(context, R.color.activated)
+        ).addSwipeLeftActionIcon(R.drawable.ic_remove_white).addSwipeRightActionIcon(
+            R.drawable.ic_completed
+        ).create()
             .decorate()
     }
 

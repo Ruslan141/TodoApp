@@ -9,24 +9,18 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import ru.versoit.data.repository.TodoItemRepositoryImpl
-import ru.versoit.data.storage.datasources.local.RoomTodoItemDataSource
-import ru.versoit.data.storage.datasources.local.SharedPrefsRevisionDataSource
-import ru.versoit.data.storage.datasources.local.TokenDataSourceImpl
-import ru.versoit.data.storage.datasources.network.RetrofitTodoItemDataSource
 import ru.versoit.domain.models.Importance
-import ru.versoit.domain.usecase.TodoItemRemoveUseCase
-import ru.versoit.domain.usecase.TodoItemUpdateUseCase
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.app.TodoApp
 import ru.versoit.todoapp.databinding.FragmentEditTodoItemBinding
@@ -73,6 +67,7 @@ class EditTodoItemFragment : Fragment() {
 
         initViewModel()
         prepare()
+        setOnBackPressedDispatcher()
 
         with(binding) {
             launchDeadlineListener(textViewDeadline)
@@ -125,21 +120,44 @@ class EditTodoItemFragment : Fragment() {
             }
 
             viewModel.update()
-            findNavController().navigateUp()
+            navigateUp()
         }
     }
 
     private fun setCancelEvent(imageView: ImageView) {
 
         imageView.setOnClickListener {
-            findNavController().navigateUp()
+            navigateUp()
         }
+    }
+
+    private fun setOnBackPressedDispatcher() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    navigateUp()
+                }
+            })
+    }
+
+    private fun navigateUp() {
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.tasksFragment, true)
+            .setEnterAnim(R.anim.scale)
+            .setExitAnim(R.anim.scale_out)
+            .setPopEnterAnim(R.anim.scale_pop)
+            .setPopExitAnim(R.anim.scale_out_pop)
+            .build()
+
+        findNavController().navigate(R.id.tasksFragment, null, navOptions)
     }
 
     private fun setRemoveEvent(view: View) {
         view.setOnClickListener {
             viewModel.removeTodoItem()
-            findNavController().navigateUp()
+            navigateUp()
         }
     }
 

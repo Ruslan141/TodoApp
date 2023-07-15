@@ -60,7 +60,7 @@ class UnimportantTodoItemViewHolder(
      *
      * @param model The todo item to be bound.
      */
-    override fun bind(model: ru.versoit.domain.models.TodoItem) {
+    override fun bind(model: TodoItem) {
 
         bindUIByModel(model)
         showMenuOnLongListener(itemView, model)
@@ -70,7 +70,7 @@ class UnimportantTodoItemViewHolder(
         }
     }
 
-    private fun bindUIByModel(model: ru.versoit.domain.models.TodoItem) {
+    private fun bindUIByModel(model: TodoItem) {
 
         with(binding) {
             textViewText.text = model.text
@@ -89,7 +89,7 @@ class UnimportantTodoItemViewHolder(
         }
     }
 
-    private fun bindCheckBoxTodoItemUpdaterListener(checkBoxState: CheckBox, model: ru.versoit.domain.models.TodoItem) {
+    private fun bindCheckBoxTodoItemUpdaterListener(checkBoxState: CheckBox, model: TodoItem) {
         checkBoxState.setOnClickListener {
             setTextState(checkBoxState.isChecked)
             todoItemUpdater.updateTodoItem(
@@ -110,7 +110,7 @@ class UnimportantTodoItemViewHolder(
         }
     }
 
-    private fun showMenuOnLongListener(view: View, model: ru.versoit.domain.models.TodoItem) {
+    private fun showMenuOnLongListener(view: View, model: TodoItem) {
         view.setOnLongClickListener { value ->
             val popupMenu = PopupMenu(value.context, value)
             popupMenu.inflate(R.menu.menu_opens)
@@ -120,7 +120,7 @@ class UnimportantTodoItemViewHolder(
         }
     }
 
-    private fun setCrudEventsMenu(popupMenu: PopupMenu, model: ru.versoit.domain.models.TodoItem) {
+    private fun setCrudEventsMenu(popupMenu: PopupMenu, model: TodoItem) {
 
         popupMenu.setOnMenuItemClickListener {
 

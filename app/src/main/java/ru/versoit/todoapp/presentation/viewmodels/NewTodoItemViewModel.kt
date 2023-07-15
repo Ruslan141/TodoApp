@@ -33,7 +33,7 @@ import java.util.Locale
 
 class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) : ViewModel() {
 
-    private val _deadline = MutableStateFlow(Date())
+    private val _deadline = MutableStateFlow(getInitialDate())
     val deadline: Flow<Date> = _deadline
 
     private val _importance = MutableStateFlow(Importance.UNIMPORTANT)
@@ -101,10 +101,14 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
     fun updateDeadline(day: Int, month: Int, year: Int) {
         val calendar = Calendar.getInstance()
 
+        calendar.set(Calendar.MINUTE, DEADLINE_MINUTES)
+        calendar.set(Calendar.SECOND, DEADLINE_SECONDS)
+        calendar.set(Calendar.HOUR_OF_DAY, DEADLINE_HOURS)
         calendar.set(Calendar.DAY_OF_MONTH, day)
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.YEAR, year)
 
+        calendar.time
         _deadline.value = calendar.time
     }
 
@@ -148,5 +152,21 @@ class NewTodoItemViewModel(private val addTodoItemUseCase: AddTodoItemUseCase) :
         calendar.set(Calendar.SECOND, 0)
 
         return calendar.time
+    }
+
+    private fun getInitialDate(): Date {
+        val calendar = Calendar.getInstance()
+
+        calendar.set(Calendar.MINUTE, DEADLINE_MINUTES)
+        calendar.set(Calendar.SECOND, DEADLINE_SECONDS)
+        calendar.set(Calendar.HOUR_OF_DAY, DEADLINE_HOURS)
+
+        return calendar.time
+    }
+
+    companion object {
+        private const val DEADLINE_HOURS = 23
+        private const val DEADLINE_MINUTES = 59
+        private const val DEADLINE_SECONDS = 59
     }
 }

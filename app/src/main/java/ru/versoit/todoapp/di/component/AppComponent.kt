@@ -14,4 +14,5 @@ interface AppComponent {
     fun todoItemsFragmentComponent(): TodoItemsFragmentComponent
     fun newTodoItemFragmentComponent(): NewTodoItemFragmentComponent
     fun editTodoItemFragmentComponent(): EditTodoItemFragmentComponent
+    fun notificationsExecutorComponent(): NotificationsExecutorComponent
 }

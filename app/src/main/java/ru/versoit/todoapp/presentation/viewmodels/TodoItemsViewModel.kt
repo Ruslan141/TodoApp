@@ -7,10 +7,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.versoit.data.storage.datasources.network.NetworkSynchronizer
 import ru.versoit.data.storage.datasources.network.SyncCallback
+import ru.versoit.domain.models.ThemeType
 import ru.versoit.domain.usecase.AddTodoItemUseCase
 import ru.versoit.domain.usecase.GetAllTodoItemsUseCase
+import ru.versoit.domain.usecase.ManipulateThemesUseCase
+import ru.versoit.domain.usecase.NotificationPermissionSelectionUseCase
 import ru.versoit.domain.usecase.TodoItemRemoveUseCase
 import ru.versoit.domain.usecase.TodoItemUpdateUseCase
+import ru.versoit.todoapp.presentation.ThemeManipulator
+import ru.versoit.todoapp.presentation.fragments.NotificationPermissionsSelector
 
 /**
  * ViewModel class for managing list of all todo items.
@@ -30,20 +35,30 @@ class TodoItemsViewModel(
     private val getAllTodoItemsUseCase: GetAllTodoItemsUseCase,
     private val networkSynchronizer: NetworkSynchronizer,
     private val syncCallback: SyncCallback,
-) : ViewModel(), TodoItemUpdater, TodoItemRemover, TodoItemCompleter, UndoDeleter {
+    private val notificationPermissionSelectionUseCase: NotificationPermissionSelectionUseCase,
+    private val manipulateThemesUseCase: ManipulateThemesUseCase
+) : ViewModel(), ThemeManipulator, TodoItemUpdater, TodoItemRemover, TodoItemCompleter, UndoDeleter,
+    NotificationPermissionsSelector {
 
     private val _hideCompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val hideCompleted: Flow<Boolean> = _hideCompleted
 
     private var todoItemsList = listOf<ru.versoit.domain.models.TodoItem>()
 
-    private val _todoItemsFlow: MutableStateFlow<List<ru.versoit.domain.models.TodoItem>?> = MutableStateFlow(null)
+    private val _todoItemsFlow: MutableStateFlow<List<ru.versoit.domain.models.TodoItem>?> =
+        MutableStateFlow(null)
     val todoItemsFlow: Flow<List<ru.versoit.domain.models.TodoItem>?> = _todoItemsFlow
 
     private val _todoItemsDoneAmount = MutableStateFlow(0)
     val todoItemsDoneAmount: Flow<Int> = _todoItemsDoneAmount
 
     private var lastDeleted: ru.versoit.domain.models.TodoItem? = null
+
+    override suspend fun isNotificationPermissionSelected() =
+        notificationPermissionSelectionUseCase.isPermissionSelected()
+
+    override suspend fun setNotificationPermissionSelected() =
+        notificationPermissionSelectionUseCase.setPermissionSelected()
 
     /**
      * Replaces the element passed as a method parameter with an element that is in the store with the same id.
@@ -55,6 +70,7 @@ class TodoItemsViewModel(
             todoItemUpdateUseCase(todoItem)
         }
     }
+
 
     /**
      * Loads all todo items from repository.
@@ -151,4 +167,8 @@ class TodoItemsViewModel(
     fun isCompletedTodoItemsHidden(): Boolean {
         return _hideCompleted.value
     }
+
+    override suspend fun saveTheme(theme: ThemeType) = manipulateThemesUseCase.saveTheme(theme)
+
+    override suspend fun getCurrentTheme() = manipulateThemesUseCase.getCurrentTheme()
 }

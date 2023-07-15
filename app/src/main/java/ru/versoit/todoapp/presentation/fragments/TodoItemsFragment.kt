@@ -22,8 +22,12 @@ import kotlinx.coroutines.launch
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.app.TodoApp
 import ru.versoit.todoapp.databinding.FragmentTodoItemsBinding
+import ru.versoit.todoapp.presentation.features.ThemeStatusChanger
 import ru.versoit.todoapp.presentation.features.TodoItemEditor
 import ru.versoit.todoapp.presentation.features.TodoItemsAdapter
+import ru.versoit.todoapp.presentation.features.dialogs.AppThemeBottomSheetSelection
+import ru.versoit.todoapp.presentation.features.dialogs.NotificationPermissionsDialog
+import ru.versoit.todoapp.presentation.features.notifications.NotificationScheduler
 import ru.versoit.todoapp.presentation.features.vmfactory.TodoItemsViewModelFactory
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemsViewModel
 import javax.inject.Inject
@@ -36,13 +40,15 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
     lateinit var viewModelFactory: TodoItemsViewModelFactory
     lateinit var viewModel: TodoItemsViewModel
 
+    @Inject
+    lateinit var notificationsScheduler: NotificationScheduler
+
     private var _binding: FragmentTodoItemsBinding? = null
     private val binding get() = _binding!!
 
     private var vibrator: Vibrator? = null
 
     companion object {
-        private const val VIBRATION_DURATION = 100L
         private const val START_PROGRESS_VIEW_OFFSET = -100
         private const val END_PROGRESS_VIEW_OFFSET = 10
     }
@@ -62,6 +68,8 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
     }
 
     private fun init() {
+        tryShowNotificationsPermissionsDialog()
+        bindSettingsButtonToOpenSettingsBottomSheet()
 
         vibrator = getSystemService(requireContext(), Vibrator::class.java)
 
@@ -69,7 +77,6 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
             floatingButtonAddNewTask.setOnClickListener {
                 findNavController().navigate(R.id.action_tasksFragment_to_newTask)
             }
-
             textViewAddNewTask.setOnClickListener {
                 findNavController().navigate(R.id.action_tasksFragment_to_newTask)
             }
@@ -78,6 +85,28 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
             setSyncFailureCallback(viewModel)
             setRefreshActions()
             setCloseEventOnBackPressed()
+        }
+    }
+
+    private fun bindSettingsButtonToOpenSettingsBottomSheet() {
+        val bottomSheetSelection = AppThemeBottomSheetSelection(
+            requireContext(),
+            layoutInflater,
+            ThemeStatusChanger(viewModel),
+            viewModel,
+            requireActivity()
+        )
+        binding.imageViewSettings.setOnClickListener {
+            bottomSheetSelection.show()
+        }
+    }
+
+    private fun tryShowNotificationsPermissionsDialog() {
+        val notificationPermissionsDialog =
+            NotificationPermissionsDialog(requireContext(), viewModel, layoutInflater)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            notificationPermissionsDialog.tryShow()
         }
     }
 
@@ -150,6 +179,8 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
 
             viewModel.todoItemsFlow.collect { list ->
                 adapter.submitList(list)
+                if (list != null)
+                    notificationsScheduler.scheduleNotifications(list)
             }
         }
 
@@ -162,7 +193,14 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
         val adapter = recyclerView.adapter as TodoItemsAdapter
         setTodoItemsDoneAmountListener()
 
-        RecyclerViewSwiper(recyclerView = recyclerView, adapter = adapter, context = requireContext(), undoDeleter = viewModel, todoItemCompleter = viewModel, todoItemsRemover = viewModel).attachSwipesToRecyclerView()
+        RecyclerViewSwiper(
+            recyclerView = recyclerView,
+            adapter = adapter,
+            context = requireContext(),
+            undoDeleter = viewModel,
+            todoItemCompleter = viewModel,
+            todoItemsRemover = viewModel
+        ).attachSwipesToRecyclerView()
 
         launchHideOrShowCompletedEvent()
     }
@@ -172,9 +210,19 @@ class TodoItemsFragment : Fragment(), TodoItemEditor {
 
             viewModel.hideCompleted.collect { isHidden ->
                 if (!isHidden) {
-                    binding.imageViewHide.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_show))
+                    binding.imageViewHide.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.ic_show
+                        )
+                    )
                 } else {
-                    binding.imageViewHide.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_hide))
+                    binding.imageViewHide.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.ic_hide
+                        )
+                    )
                 }
             }
         }

@@ -2,6 +2,7 @@ package ru.versoit.todoapp.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import ru.versoit.domain.usecase.GetTokenUseCase
+import ru.versoit.domain.usecase.ManipulateThemesUseCase
 import ru.versoit.domain.usecase.SaveTokenUseCase
 
 /**
@@ -13,7 +14,8 @@ import ru.versoit.domain.usecase.SaveTokenUseCase
 
 class MainViewModel(
     private val getTokenUseCase: GetTokenUseCase,
-    private val saveTokenUseCase: SaveTokenUseCase
+    private val saveTokenUseCase: SaveTokenUseCase,
+    private val manipulateThemesUseCase: ManipulateThemesUseCase
 ) : ViewModel() {
 
     /**
@@ -34,6 +36,8 @@ class MainViewModel(
      *
      * @return `true` if token exists, `false` otherwise.
      */
+
+    suspend fun getCurrentTheme() = manipulateThemesUseCase.getCurrentTheme()
 
     suspend fun hasToken() = getTokenUseCase.hasToken()
 }

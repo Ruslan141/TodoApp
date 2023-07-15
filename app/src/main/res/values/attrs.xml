@@ -8,4 +8,9 @@
     <attr name="switch_track_color_unchecked" format="color|reference"/>
     <attr name="todo_item_date_text_color" format="color|reference"/>
     <attr name="nav_bar_background" format="color|reference"/>
+    <attr name="alertDialogBackground" format="color|reference"/>
+    <attr name="settings" format="reference"/>
+    <attr name="unselectedRadioButtonBackground" format="reference"/>
+    <attr name="unselectedRadioButtonTextColor" format="color|reference"/>
+    <attr name="bottomSheetBackground" format="reference"/>
 </resources>
