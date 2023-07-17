@@ -1,11 +1,12 @@
 package ru.versoit.todoapp.presentation.viewholders
 
 import android.view.View
+import android.widget.CheckBox
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import ru.versoit.todoapp.R
 import ru.versoit.todoapp.databinding.TaskLessImportantBinding
-import ru.versoit.todoapp.domain.models.TodoItem
+import ru.versoit.domain.models.TodoItem
 import ru.versoit.todoapp.presentation.features.TodoItemsAdapter
 import ru.versoit.todoapp.presentation.features.TodoItemEditor
 import ru.versoit.todoapp.presentation.viewmodels.TodoItemRemover
@@ -14,39 +15,67 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * ViewHolder class for displaying important todo items.
+ *
+ * @param binding The view binding for the view holder.
+ * @param todoItemUpdater The interface for updating todo item.
+ * @param todoItemEditor The interface for editing todo item.
+ * @param todoItemRemover The interface for removing todo item.
+ */
 class LessImportantTodoItemViewHolder(
     private val binding: TaskLessImportantBinding,
     private val todoItemUpdater: TodoItemUpdater,
+    private val todoItemEditor: TodoItemEditor,
     private val todoItemRemover: TodoItemRemover,
-    private val todoItemEditor: TodoItemEditor
 ) :
     RecyclerView.ViewHolder(binding.root), TodoItemsAdapter.ViewHolder {
 
+    /**
+     * Secondary constructor for create view holder.
+     *
+     * @param view The root view of the ViewHolder.
+     * @param todoItemUpdater The interface for updating todo item.
+     * @param todoItemEditor The interface for editing todo item.
+     * @param todoItemRemover The interface for removing todo item.
+     */
     constructor(
         view: View,
         todoItemUpdater: TodoItemUpdater,
-        todoItemRemover: TodoItemRemover,
-        todoItemEditor: TodoItemEditor
+        todoItemEditor: TodoItemEditor,
+        todoItemRemover: TodoItemRemover
     ) : this(
         TaskLessImportantBinding.bind(view),
         todoItemUpdater,
-        todoItemRemover,
-        todoItemEditor
+        todoItemEditor,
+        todoItemRemover
     ) {
         binding.textViewText.isAlphaAnimate = true
     }
 
-    override fun bind(model: TodoItem) {
+    /**
+     * Binds the todo item data to the ViewHolder.
+     *
+     * @param model The todo item to be bound.
+     */
+    override fun bind(model: ru.versoit.domain.models.TodoItem) {
+
+        bindUIByModel(model)
+        showMenuOnLongListener(itemView, model)
+
+        itemView.setOnClickListener {
+            todoItemEditor.edit(model)
+        }
+    }
+
+    private fun bindUIByModel(model: ru.versoit.domain.models.TodoItem) {
 
         with(binding) {
             textViewText.text = model.text
             checkBoxState.isChecked = model.done
             setTextState(model.done)
 
-            checkBoxState.setOnClickListener {
-                setTextState(checkBoxState.isChecked)
-                todoItemUpdater.updateTodoItem(model.copy(done = checkBoxState.isChecked, lastUpdate = Date()))
-            }
+            bindCheckBoxTodoItemUpdaterListener(binding.checkBoxState, model)
 
             if (model.deadline != null) {
                 textViewDeadline.visibility = View.VISIBLE
@@ -56,34 +85,17 @@ class LessImportantTodoItemViewHolder(
                 textViewDeadline.visibility = View.GONE
             }
         }
+    }
 
-        itemView.setOnLongClickListener { it ->
-            val popupMenu = PopupMenu(it.context, it)
-            popupMenu.inflate(R.menu.menu_opens)
-            popupMenu.show()
-
-            popupMenu.setOnMenuItemClickListener {
-
-                when (it.itemId) {
-                    R.id.remove -> {
-                        todoItemRemover.removeTodoItem(model)
-                        true
-                    }
-
-                    R.id.edit -> {
-                        todoItemEditor.edit(model)
-                        true
-                    }
-
-                    else -> true
-                }
-            }
-
-            false
-        }
-
-        itemView.setOnClickListener {
-            todoItemEditor.edit(model)
+    private fun bindCheckBoxTodoItemUpdaterListener(checkBoxState: CheckBox, model: ru.versoit.domain.models.TodoItem) {
+        checkBoxState.setOnClickListener {
+            setTextState(checkBoxState.isChecked)
+            todoItemUpdater.updateTodoItem(
+                model.copy(
+                    done = checkBoxState.isChecked,
+                    lastUpdate = Date()
+                )
+            )
         }
     }
 
@@ -93,6 +105,36 @@ class LessImportantTodoItemViewHolder(
                 textViewText.animateRemoveStrikeThrough()
             else
                 textViewText.animateStrikeThrough()
+        }
+    }
+
+    private fun showMenuOnLongListener(view: View, model: ru.versoit.domain.models.TodoItem) {
+        view.setOnLongClickListener { value ->
+            val popupMenu = PopupMenu(value.context, value)
+            popupMenu.inflate(R.menu.menu_opens)
+            setRemoveEditEventsMenu(popupMenu, model)
+            popupMenu.show()
+            false
+        }
+    }
+
+    private fun setRemoveEditEventsMenu(popupMenu: PopupMenu, model: ru.versoit.domain.models.TodoItem) {
+
+        popupMenu.setOnMenuItemClickListener {
+
+            when (it.itemId) {
+                R.id.remove -> {
+                    todoItemRemover.removeTodoItem(model)
+                    true
+                }
+
+                R.id.edit -> {
+                    todoItemEditor.edit(model)
+                    true
+                }
+
+                else -> true
+            }
         }
     }
 }

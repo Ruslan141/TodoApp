@@ -19,7 +19,7 @@
             app:collapsedTitleTextAppearance="@style/CollapsedAppBarTitle"
             app:expandedTitleMarginBottom="52dp"
             app:expandedTitleMarginStart="62dp"
-            app:expandedTitleTextAppearance="@style/TextViewHeader"
+            app:expandedTitleTextAppearance="@style/H1"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleCollapseMode="scale"
             app:toolbarId="@id/toolbar">
@@ -142,9 +142,8 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textView_selected_importance"
-                style="@style/Widget.textViewSubhead"
+                style="@style/H2"
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
 
                 android:paddingHorizontal="10dp"

@@ -2,6 +2,7 @@
 <resources>
     <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
         <item name="android:windowBackground">@color/night_background</item>
         <item name="android:textColor">@color/text_color_for_night</item>
         <item name="android:textSize">20sp</item>
@@ -13,13 +14,27 @@
         <item name="switch_track_color_unchecked">@color/switch_track_color_unchecked_night</item>
         <item name="todo_item_date_text_color">@color/todo_item_date_text_color_night</item>
         <item name="nav_bar_background">@color/night_background</item>
+        <item name="alertDialogBackground">@color/alert_dialog_background_night</item>
+        <item name="settings">@drawable/ic_settings_night</item>
+        <item name="unselectedRadioButtonBackground">@drawable/unselected_radio_button_night</item>
+        <item name="unselectedRadioButtonTextColor">@android:color/white</item>
+        <item name="bottomSheetBackground">@android:color/black</item>
     </style>
 
-    <style name="TextViewHeader" parent="Widget.MaterialComponents.TextView">
+    <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/radio_button_night</item>
+        <item name="android:button">@android:color/transparent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/radio_button_text_color</item>
+    </style>
+
+    <style name="H1" parent="Widget.MaterialComponents.TextView">
         <item name="android:textSize">32sp</item>
     </style>
 
-    <style name="Widget.textViewSubhead" parent="Widget.MaterialComponents.TextView">
+    <style name="H2" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">@color/text_color_for_night_subhead</item>
     </style>
 

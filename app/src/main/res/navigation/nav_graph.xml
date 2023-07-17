@@ -37,7 +37,7 @@
         android:label="EditTodoItemFragment">
         <argument
             android:name="todoItem"
-            app:argType="ru.versoit.todoapp.domain.models.TodoItem" />
+            app:argType="ru.versoit.domain.models.TodoItem" />
     </fragment>
     <fragment
         android:id="@+id/loadingFragment"
@@ -51,5 +51,8 @@
             app:exitAnim="@anim/scale_out"
             app:popEnterAnim="@anim/scale_pop"
             app:popExitAnim="@anim/scale_out_pop"/>
+        <action
+            android:id="@+id/action_loadingFragment_to_editTodoItemFragment"
+            app:destination="@id/editTodoItemFragment" />
     </fragment>
 </navigation>

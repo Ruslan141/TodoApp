@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import ru.versoit.todoapp.R
 
+/**
+ * Fragment for displaying a loading screen.
+ */
 class LoadingFragment : Fragment() {
 
     override fun onCreateView(
@@ -14,11 +17,5 @@ class LoadingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_loading, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
     }
 }

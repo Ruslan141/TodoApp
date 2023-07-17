@@ -28,4 +28,17 @@
     <string name="retry">Повторить</string>
     <string name="try_again_later">Повторите попытку позже</string>
     <string name="loading">Загрузка</string>
+    <string name="base_notifications">Базовые уведомления</string>
+    <string name="deadline_will_expire">Дедлайн истечет</string>
+    <string name="allow_todo_app_to_send_you_notifications">Разрешить приложению TodoApp отправку уведомлений?</string>
+    <string name="allow">Разрешить</string>
+    <string name="dont_allow">Запретить</string>
+    <string name="notification">Уведомление</string>
+    <string name="notifications_for_important_events">Уведомления нужны для оповещения о важных событиях</string>
+    <string name="settings">Настройки</string>
+    <string name="separator">Разделитель</string>
+    <string name="theme">Тема</string>
+    <string name="light">Светлая</string>
+    <string name="dark">Тёмная</string>
+    <string name="system">Системная</string>
 </resources>

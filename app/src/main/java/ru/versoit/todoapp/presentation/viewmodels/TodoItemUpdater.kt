@@ -1,6 +1,10 @@
 package ru.versoit.todoapp.presentation.viewmodels
 
-import ru.versoit.todoapp.domain.models.TodoItem
+import ru.versoit.domain.models.TodoItem
+
+/**
+ * Interface for updating todoItem.
+ */
 
 interface TodoItemUpdater {
 

@@ -1,21 +1,29 @@
 package ru.versoit.todoapp.utils
 
-import ru.versoit.todoapp.data.models.TodoItemData
-import ru.versoit.todoapp.domain.models.TodoItem
-import java.util.Date
+import ru.versoit.domain.models.TodoItem
+import ru.versoit.todoapp.presentation.features.TodoItemParcelable
 
-const val DATE_FORMAT = "d MMM yyyy"
 
-fun Long.toDate() = Date(this)
-
-fun TodoItem.toData() = TodoItemData(
+fun TodoItem.toParcelable() = TodoItemParcelable(
     id = id,
     text = text,
     importance = importance,
     deadline = deadline,
     done = done,
-    color = color,
     created = created,
+    color = color,
     lastUpdate = lastUpdate,
-    lastUpdatedBy = lastUpdatedBy,
+    lastUpdatedBy = lastUpdatedBy
+)
+
+fun TodoItemParcelable.toDomain() = TodoItem(
+    id = id,
+    text = text,
+    importance = importance,
+    deadline = deadline,
+    done = done,
+    created = created,
+    color = color,
+    lastUpdate = lastUpdate,
+    lastUpdatedBy = lastUpdatedBy
 )

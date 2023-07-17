@@ -5,54 +5,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import ru.versoit.domain.models.Importance
 import ru.versoit.todoapp.R
-import ru.versoit.todoapp.data.repository.TodoItemRepositoryImpl
-import ru.versoit.todoapp.data.storage.datasources.RetrofitTodoItemDataSource
-import ru.versoit.todoapp.data.storage.datasources.RoomTodoItemDataSource
-import ru.versoit.todoapp.data.storage.datasources.SharedPrefsRevisionDataSource
-import ru.versoit.todoapp.data.storage.datasources.TokenDataSourceImpl
+import ru.versoit.todoapp.app.TodoApp
 import ru.versoit.todoapp.databinding.FragmentEditTodoItemBinding
-import ru.versoit.todoapp.domain.models.Importance
-import ru.versoit.todoapp.domain.usecase.TodoItemRemoveUseCase
-import ru.versoit.todoapp.domain.usecase.TodoItemUpdateUseCase
 import ru.versoit.todoapp.presentation.features.vmfactory.EditTodoItemViewModelFactory
 import ru.versoit.todoapp.presentation.viewmodels.EditTodoItemViewModel
+import javax.inject.Inject
 
+/**
+ * Fragment for editing todo item.
+ */
 class EditTodoItemFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: EditTodoItemViewModelFactory
+    private lateinit var viewModel: EditTodoItemViewModel
 
     private var _binding: FragmentEditTodoItemBinding? = null
     private val binding get() = _binding!!
-
-    private val viewModel by viewModels<EditTodoItemViewModel> {
-
-        EditTodoItemViewModelFactory(
-            TodoItemUpdateUseCase(
-                TodoItemRepositoryImpl(
-                    RoomTodoItemDataSource(requireContext()),
-                    RetrofitTodoItemDataSource(),
-                    SharedPrefsRevisionDataSource(requireContext()),
-                    TokenDataSourceImpl(requireContext())
-                )
-            ),
-            TodoItemRemoveUseCase(
-                TodoItemRepositoryImpl(
-                    RoomTodoItemDataSource(requireContext()),
-                    RetrofitTodoItemDataSource(),
-                    SharedPrefsRevisionDataSource(requireContext()),
-                    TokenDataSourceImpl(requireContext())
-                )
-            )
-        )
-    }
 
     private val args: EditTodoItemFragmentArgs by navArgs()
 
@@ -76,51 +62,144 @@ class EditTodoItemFragment : Fragment() {
         init()
     }
 
+
     private fun init() {
 
+        initViewModel()
+        prepare()
+        setOnBackPressedDispatcher()
+
+        with(binding) {
+            launchDeadlineListener(textViewDeadline)
+
+            inflateImportanceSelectionMenu(binding.textViewImportance)
+            setImportanceViewListeners(textViewSelectedImportance)
+            setTextViewDeadlineListener(textViewDeadline)
+            setSwitchDeadlineListener(binding.switchDeadline)
+
+            launchImportanceListener(textViewSelectedImportance)
+            launchFormattedDateListener(textViewLastChange)
+
+            setCancelEvent(imageViewCancel)
+            setRemoveEvent(textViewRemove)
+            setUpdateEvent(textViewSave, editTextTask)
+        }
+    }
+
+    private fun initViewModel() {
+        inject()
+        viewModel = ViewModelProvider(this, viewModelFactory)[EditTodoItemViewModel::class.java]
+    }
+
+    private fun inject() {
+        (requireActivity().application as TodoApp).appComponent.editTodoItemFragmentComponent()
+            .inject(this)
+    }
+
+    private fun prepare() {
         val todoItem = args.todoItem
+
         viewModel.setItemToEdit(todoItem)
+        binding.switchDeadline.isChecked = viewModel.isDeadline
+        binding.editTextTask.setText(viewModel.text)
+    }
 
-        lifecycleScope.launch {
+    private fun setUpdateEvent(view: View, editTextTask: EditText) {
 
-            viewModel.deadline.collect {
+        view.setOnClickListener {
+            viewModel.updateText(editTextTask.text.toString())
 
-                if (viewModel.isInvalidDeadline) binding.textViewDeadline.setTextColor(
-                    ContextCompat.getColor(
-                        this@EditTodoItemFragment.requireContext(), R.color.invalid
-                    )
-                )
-                else binding.textViewDeadline.setTextColor(
-                    ContextCompat.getColor(
-                        this@EditTodoItemFragment.requireContext(), R.color.primary
-                    )
-                )
+            if (viewModel.isInvalidDeadline) {
+                Snackbar.make(binding.root, R.string.invalid_date, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
-                binding.textViewDeadline.text = viewModel.formattedDeadline
+            if (viewModel.isInvalidText) {
+                Snackbar.make(binding.root, R.string.invalid_text, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            viewModel.update()
+            navigateUp()
+        }
+    }
+
+    private fun setCancelEvent(imageView: ImageView) {
+
+        imageView.setOnClickListener {
+            navigateUp()
+        }
+    }
+
+    private fun setOnBackPressedDispatcher() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    navigateUp()
+                }
+            })
+    }
+
+    private fun navigateUp() {
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.tasksFragment, true)
+            .setEnterAnim(R.anim.scale)
+            .setExitAnim(R.anim.scale_out)
+            .setPopEnterAnim(R.anim.scale_pop)
+            .setPopExitAnim(R.anim.scale_out_pop)
+            .build()
+
+        findNavController().navigate(R.id.tasksFragment, null, navOptions)
+    }
+
+    private fun setRemoveEvent(view: View) {
+        view.setOnClickListener {
+            viewModel.removeTodoItem()
+            navigateUp()
+        }
+    }
+
+    private fun launchFormattedDateListener(textView: TextView) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.lastChangedFormatted.collect { lastChange ->
+                val textFormatted = "${getString(R.string.last_edit)} - $lastChange"
+                textView.text = textFormatted
             }
         }
+    }
 
-        inflateImportanceSelectionMenu(binding.textViewImportance)
+    private fun setTextViewDeadlineListener(view: View) {
 
-        binding.textViewImportance.setOnClickListener {
-            importanceMenu.show()
-        }
-
-        binding.textViewSelectedImportance.setOnClickListener {
-            importanceMenu.show()
-        }
-
-        binding.textViewDeadline.setOnClickListener {
+        view.setOnClickListener {
 
             val datePicker = DatePickerDialog(this.requireContext(), R.style.DatePicker)
-            datePicker.updateDate(viewModel.year, viewModel.month, viewModel.day)
+            datePicker.updateDate(
+                viewModel.deadlineYear,
+                viewModel.deadlineMonth,
+                viewModel.deadlineDay
+            )
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                 viewModel.updateDeadline(dayOfMonth, month, year)
             }
             datePicker.show()
         }
+    }
 
-        binding.switchDeadline.setOnCheckedChangeListener { _, isChecked ->
+    private fun setImportanceViewListeners(view: View) {
+        view.setOnClickListener {
+            importanceMenu.show()
+        }
+
+        view.setOnClickListener {
+            importanceMenu.show()
+        }
+    }
+
+    private fun setSwitchDeadlineListener(checkBox: SwitchCompat) {
+
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
 
             viewModel.isDeadline = isChecked
 
@@ -134,106 +213,61 @@ class EditTodoItemFragment : Fragment() {
             binding.textViewMakeUp.alpha = INACTIVE
 
         }
+    }
 
-        binding.switchDeadline.isChecked = viewModel.isDeadline
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.lastChangedFormatted.collect { lastChange ->
-                val textFormatted = "${getString(R.string.last_edit)} - $lastChange"
-                binding.textViewLastChange.text = textFormatted
-            }
-        }
+    private fun launchImportanceListener(textView: TextView) {
 
         viewLifecycleOwner.lifecycleScope.launch {
 
             viewModel.importance.collect { importance ->
 
                 when (importance) {
-                    Importance.UNIMPORTANT -> binding.textViewSelectedImportance.text =
+                    Importance.UNIMPORTANT -> textView.text =
                         getString(R.string.no)
 
-                    Importance.LESS_IMPORTANT -> binding.textViewSelectedImportance.text =
+                    Importance.LESS_IMPORTANT -> textView.text =
                         getString(R.string.less)
 
-                    Importance.IMPORTANT -> binding.textViewSelectedImportance.text =
+                    Importance.IMPORTANT -> textView.text =
                         getString(R.string.important)
                 }
             }
         }
+    }
 
-        binding.editTextTask.setText(viewModel.text)
+    private fun launchDeadlineListener(textView: TextView) {
 
-        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            if (scrollY > binding.imageViewCancel.top) {
-                binding.navBar.root.visibility = View.VISIBLE
-            } else {
-                binding.navBar.root.visibility = View.GONE
+        lifecycleScope.launch {
+            viewModel.deadline.collect {
+
+                if (viewModel.isInvalidDeadline) textView.setTextColor(
+                    ContextCompat.getColor(
+                        this@EditTodoItemFragment.requireContext(), R.color.invalid
+                    )
+                )
+                else textView.setTextColor(
+                    ContextCompat.getColor(
+                        this@EditTodoItemFragment.requireContext(), R.color.primary
+                    )
+                )
+
+                textView.text = viewModel.formattedDeadline
             }
         }
-
-        binding.imageViewCancel.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.navBar.imageViewCancelInNawBar.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.textViewRemove.setOnClickListener {
-            viewModel.removeTodoItem()
-            findNavController().navigateUp()
-        }
-
-        bindUpdateEventTo(binding.textViewSave)
-        bindUpdateEventTo(binding.navBar.textViewSaveInNavBar)
     }
 
     private fun inflateImportanceSelectionMenu(view: View) {
         importanceMenu = PopupMenu(requireContext(), view)
         val inflater = importanceMenu.menuInflater
         inflater.inflate(R.menu.popup_menu, importanceMenu.menu)
-
-        importanceMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.unimportant -> {
-                    viewModel.updateImportance(Importance.UNIMPORTANT)
-                    true
-                }
-
-                R.id.less_important -> {
-                    viewModel.updateImportance(Importance.LESS_IMPORTANT)
-                    true
-                }
-
-                R.id.important -> {
-                    viewModel.updateImportance(Importance.IMPORTANT)
-                    true
-                }
-
-                else -> false
-            }
-
-        }
+        bindMenuEvents(importanceMenu)
     }
 
-    private fun bindUpdateEventTo(view: View) {
+    private fun bindMenuEvents(menu: PopupMenu) {
+        val importanceSelector = ImportanceSelector(viewModel)
 
-        view.setOnClickListener {
-
-            viewModel.updateText(binding.editTextTask.text.toString())
-
-            if (viewModel.isInvalidDeadline) {
-                Snackbar.make(binding.root, R.string.invalid_date, Snackbar.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            if (viewModel.isInvalidText) {
-                Snackbar.make(binding.root, R.string.invalid_text, Snackbar.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            viewModel.update()
-            findNavController().navigateUp()
+        menu.setOnMenuItemClickListener { item ->
+            importanceSelector.selectImportance(item.itemId)
         }
     }
 
